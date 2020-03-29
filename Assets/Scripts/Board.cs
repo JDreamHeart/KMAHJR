@@ -47,6 +47,13 @@ public class Board : MonoBehaviour
         }
         return false;
     }
+
+    public bool IsRight() {
+        if (m_spawn != null) {
+            return m_spawn.IsRight();
+        }
+        return false;
+    }
     
     void OnCollisionEnter2D(Collision2D collision) {
         Debug.Log("Board OnCollisionEnter2D===================");

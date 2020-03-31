@@ -21,14 +21,26 @@ public class GameManager : MonoBehaviour
 
     Sprite m_sprite; // 主角精灵
 
+    // 分数
     int m_score;
     Text m_scoreText;
+
+    // 箭头
+    Transform m_arrows;
+
+    // 游戏结果
+    public float m_showResultDelay = 1; // 显示结果的延时
+    float m_curShowResultDelay = 0; // 当前显示结果的延时
+    Transform m_result;
 
     // Start is called before the first frame update
     void Start()
     {
         Instance = this;
         m_sprite = GameObject.FindGameObjectWithTag("Player").GetComponent<Sprite>();
+        m_arrows = this.transform.Find("Arrows");
+        m_result = this.transform.Find("Result");
+        m_result.gameObject.SetActive(false);
         // 获取游戏信息
         Transform infos = this.transform.Find("Infos");
         if (infos != null) {
@@ -47,14 +59,41 @@ public class GameManager : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) {
             m_sprite.Jump();
         }
+        if (!m_sprite.gameObject.activeSelf) {
+            m_curShowResultDelay += Time.deltaTime;
+            if (m_curShowResultDelay >= m_showResultDelay) {
+                OnStopGame();
+            }
+        }
     }
 
     public void OnStartGame() {
         m_isPlaying = true;
+        if (m_arrows != null) {
+            m_arrows.gameObject.SetActive(false);
+        }
+        m_sprite.OnStartGame();
+        m_curShowResultDelay = 0;
     }
     
     public void OnStopGame() {
         m_isPlaying = false;
+        Transform resultContent = m_result.Find("ResultContent");
+        Transform curScoreVal = resultContent.Find("CurrentScore").Find("ScoreValue");
+        curScoreVal.GetComponent<Text>().text = m_score.ToString();
+        Transform maxScoreVal = resultContent.Find("RankingList").Find("MaxScoreValue");
+        maxScoreVal.GetComponent<Text>().text = m_score.ToString();
+        m_result.gameObject.SetActive(true);
+    }
+
+    public void OnRestartGame() {
+        m_isPlaying = false;
+        ResetScore();
+        if (m_arrows != null) {
+            m_arrows.gameObject.SetActive(true);
+        }
+        m_sprite.OnRestartGame();
+        m_result.gameObject.SetActive(false);
     }
 
     public void AddScore(int score) {

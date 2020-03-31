@@ -150,7 +150,12 @@ public class Sprite : MonoBehaviour
     }
 
     public void OnStartGame() {
-        this.gameObject.SetActive(true);
         Jump();
+    }
+    
+    public void OnRestartGame() {
+        this.gameObject.SetActive(true);
+        // 将精灵刚体类型设为Kinematic
+        m_rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
     }
 }

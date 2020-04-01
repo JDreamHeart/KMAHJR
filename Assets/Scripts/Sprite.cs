@@ -114,6 +114,9 @@ public class Sprite : MonoBehaviour
                 TurnRight();
             }
             m_rigidbody2D.velocity = collider.GetComponent<Rigidbody2D>().velocity; // 设置速度
+        } else if (collider.tag == "Reward") {
+            Reward reward = collider.GetComponent<Reward>();
+            GameManager.Instance.AddScore(reward.GetScore());
         }
     }
 

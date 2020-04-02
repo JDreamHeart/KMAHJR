@@ -14,7 +14,9 @@ public class BoardSpawn : MonoBehaviour
     
     float m_velocity = 3f;
 
-    List<Board> m_boards = new List<Board>();
+    List<Board> m_rcBoards = new List<Board>();
+    
+    List<Board> m_activeBoards = new List<Board>();
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +45,7 @@ public class BoardSpawn : MonoBehaviour
     IEnumerator SpawnBoard() {
         while (true) {
             Board board = getBoard(); // 获取块状
+            m_activeBoards.Add(board);
             board.SetBoardSpawn(this);
             Rigidbody2D rigidbody2D = board.GetComponent<Rigidbody2D>();
             if (m_isRight) {
@@ -57,9 +60,9 @@ public class BoardSpawn : MonoBehaviour
 
     // 获取块状（使用缓存）
     Board getBoard() {
-        if (m_boards.Count > 0) {
-            Board board = m_boards[0];
-            m_boards.RemoveAt(0);
+        if (m_rcBoards.Count > 0) {
+            Board board = m_rcBoards[0];
+            m_rcBoards.RemoveAt(0);
             board.gameObject.SetActive(true);
             board.GetComponent<Transform>().position = transform.position; // 更新位置
             return board;
@@ -71,6 +74,28 @@ public class BoardSpawn : MonoBehaviour
     // 回收块状
     public void RecoverBoard(Board board) {
         board.gameObject.SetActive(false);
-        m_boards.Add(board);
+        m_rcBoards.Add(board);
+        m_activeBoards.Remove(board);
+    }
+
+    List<Vector3> GetLightningPosList() {
+        float height = this.GetComponent<RectTransform>().rect.height;
+        Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
+        Vector3 startPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x, height, pos.z));
+        Vector3 endPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x, 0, pos.z));
+        if (m_isRight) {
+            startPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x, 0, pos.z));
+            endPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x, height, pos.z));
+        }
+        List<Vector3> posList = new List<Vector3>();
+        Vector3 prePos = startPos;
+        foreach (Board board in m_activeBoards) {
+            if (m_isRight) {
+
+            } else {
+
+            }
+        }
+        return posList;
     }
 }

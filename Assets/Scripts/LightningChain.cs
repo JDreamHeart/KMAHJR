@@ -15,6 +15,10 @@ public class LightningChain : MonoBehaviour
 
     public Transform m_startPos; // 开始位置
     public Transform m_endPos; // 结束位置
+    
+    public bool m_isUseAnchor; // 是否使用位置锚点
+    public Vector2 m_startAnchor = new Vector2(-0.5f, -0.5f); // 开始位置锚点
+    public Vector2 m_endAnchor = new Vector2(0.5f, 0.5f); // 结束位置锚点
 
     LineRenderer m_lineRender; // 线条渲染器
 
@@ -33,20 +37,33 @@ public class LightningChain : MonoBehaviour
             return;
         }
         m_linePosList.Clear();
-        Vector3 startPos = Vector3.zero, endPos = Vector3.zero;
-        if (m_startPos != null) {
-            startPos = m_startPos.position;
-        }
-        if (m_endPos != null) {
-            endPos = m_endPos.position;
-        }
-        collectLinPos(startPos, endPos, m_displacement);
-        m_linePosList.Add(endPos);
+        Vector3[] posList = getStartAndEndPos();
+        collectLinPos(posList[0], posList[1], m_displacement);
+        m_linePosList.Add(posList[1]);
 
         m_lineRender.positionCount = m_linePosList.Count;
         for (int i = 0; i < m_linePosList.Count; i++) {
             m_lineRender.SetPosition(i, m_linePosList[i]);
         }
+    }
+
+    Vector3[] getStartAndEndPos() {
+        // 获取起点和终点
+        Vector3 startPos = Vector3.zero, endPos = Vector3.zero;
+        if (m_isUseAnchor) {
+            Rect rect = this.GetComponent<RectTransform>().rect;
+            Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
+            startPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x + m_startAnchor.x * rect.width, pos.y + m_startAnchor.y * rect.height, pos.z));
+            endPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x + m_endAnchor.x * rect.width, pos.y + m_endAnchor.y * rect.height, pos.z));
+        } else {
+            if (m_startPos != null) {
+                startPos = m_startPos.position;
+            }
+            if (m_endPos != null) {
+                endPos = m_endPos.position;
+            }
+        }
+        return new Vector3[]{startPos, endPos};
     }
 
     void collectLinPos(Vector3 startPos, Vector3 endPos, float displacement) {

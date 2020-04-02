@@ -82,7 +82,7 @@ public class Sprite : MonoBehaviour
         m_jumpCount += 1;
         // 更新速度
         float xSpeed = m_direction == Direction.Right ? m_speed : -m_speed;
-        m_rigidbody2D.velocity = new Vector2(xSpeed, m_speed * 0.1f * m_jumpCount); // 设置速度
+        m_rigidbody2D.velocity = new Vector2(xSpeed * m_jumpCount, m_speed * 0.2f * m_jumpCount); // 设置速度
         // 将body type设为Dynamic
         if (m_rigidbody2D.bodyType != RigidbodyType2D.Dynamic) {
             m_rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
@@ -114,7 +114,11 @@ public class Sprite : MonoBehaviour
                 TurnRight();
             }
             m_rigidbody2D.velocity = collider.GetComponent<Rigidbody2D>().velocity; // 设置速度
-        } else if (collider.tag == "Reward") {
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.tag == "Reward") {
             Reward reward = collider.GetComponent<Reward>();
             GameManager.Instance.AddScore(reward.GetScore());
         }
@@ -153,6 +157,7 @@ public class Sprite : MonoBehaviour
     }
 
     public void OnStartGame() {
+        m_jumpCount = 0;
         Jump();
     }
     

@@ -67,6 +67,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public bool IsPlaying() {
+        return m_isPlaying;
+    }
+
     public void OnStartGame() {
         m_isPlaying = true;
         if (m_arrows != null) {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [AddComponentMenu("GameScripts/Reward")]
 
@@ -11,6 +12,7 @@ public class Reward : MonoBehaviour
     public int m_score = 1;
 
     float m_velocity = -1; // 移动速度
+    
 
     // Start is called before the first frame update
     void Start()
@@ -60,11 +62,13 @@ public class Reward : MonoBehaviour
         return false;
     }
 
-    void OnCollisionEnter2D(Collision2D collision) {
-        if (m_spawn != null) {
-            m_spawn.RecoverReward(this);
-        } else {
-            Destroy(this.gameObject);
+    void OnTriggerEnter2D(Collider2D collider) {
+        if (collider.tag == "Player") {
+            if (m_spawn != null) {
+                m_spawn.RecoverReward(this);
+            } else {
+                Destroy(this.gameObject);
+            }
         }
     }
 

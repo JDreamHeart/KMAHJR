@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 8762198023837059794}
   - component: {fileID: 8762198023837059798}
   - component: {fileID: 8762198023837059799}
-  - component: {fileID: 8762198023837059796}
   - component: {fileID: 8762198023837059797}
   - component: {fileID: 8762198023837059801}
+  - component: {fileID: 2812124160644683664}
   m_Layer: 5
   m_Name: Reward
   m_TagString: Reward
@@ -69,7 +69,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 8ca8580e575673d47b452ba11e471b36, type: 3}
+  m_Sprite: {fileID: 21300000, guid: de384db4e845cf3469a227ae62676fda, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -78,18 +78,6 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
---- !u!122 &8762198023837059796
-Halo:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8762198023837059795}
-  m_Enabled: 1
-  m_Color:
-    serializedVersion: 2
-    rgba: 167833855
-  m_Size: 0.6
 --- !u!58 &8762198023837059797
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -119,6 +107,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_score: 3
+  m_survivalTime: 6
+  m_twinkleFrequency: 10
+  m_remainingTimeToTwinkle: 3
+--- !u!225 &2812124160644683664
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8762198023837059795}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8762198024665328136
 GameObject:
   m_ObjectHideFlags: 0
@@ -730,7 +733,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: -1
+      scalar: 0
       minScalar: 0
       maxCurve:
         serializedVersion: 2

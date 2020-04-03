@@ -16,9 +16,6 @@ public class RewardSpawn : MonoBehaviour
 
     List<Reward> m_rewards = new List<Reward>();
 
-    float m_offsetX = 0;
-    float m_offsetSign = 1;
-
     float m_duration;
 
     // Start is called before the first frame update
@@ -30,12 +27,6 @@ public class RewardSpawn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        m_offsetX += m_offsetSign * Time.deltaTime * m_velocity * Random.Range(0, 100f);
-        float maxWidth = this.GetComponent<RectTransform>().rect.width;
-        if (Mathf.Abs(m_offsetX) > maxWidth / 2) {
-            m_offsetX = m_offsetSign * maxWidth / 2;
-            m_offsetSign = -m_offsetSign;
-        }
         // 生成奖励物
         m_duration += Time.deltaTime;
         if (GameManager.Instance.IsPlaying() && m_duration >= m_seconds) {
@@ -64,8 +55,9 @@ public class RewardSpawn : MonoBehaviour
 
     // 获取块状（使用缓存）
     Reward getReward() {
+        Rect rect = this.GetComponent<RectTransform>().rect;
         Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
-        Vector3 targetPos = Camera.main.ScreenToWorldPoint(pos + new Vector3(m_offsetX, 0, 0));
+        Vector3 targetPos = Camera.main.ScreenToWorldPoint(pos + new Vector3(rect.width * Random.Range(-0.5f, 0.5f), rect.height * Random.Range(-0.5f, 0.5f), 0));
         if (m_rewards.Count > 0) {
             Reward reward = m_rewards[0];
             m_rewards.RemoveAt(0);

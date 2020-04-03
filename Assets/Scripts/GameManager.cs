@@ -100,6 +100,13 @@ public class GameManager : MonoBehaviour
         m_result.gameObject.SetActive(false);
     }
 
+    public Transform GetScoreTrans() {
+        if (m_scoreText != null) {
+            return m_scoreText.GetComponent<Transform>();
+        }
+        return null;
+    }
+
     public void AddScore(int score) {
         m_score += score;
         if (m_scoreText != null) {

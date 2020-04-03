@@ -9,12 +9,15 @@ using UnityEngine;
 
 public class LightningChain : MonoBehaviour
 {
-    public float m_displacement = 10; // 位移量
+    public float m_displacement = 1; // 位移量
 
-    public float m_minSpacing = 1; // 最小分形间距
+    public float m_minSpacing = 0.1f; // 最小分形间距
 
-    public Transform m_startPos; // 开始位置
-    public Transform m_endPos; // 结束位置
+    public Transform m_startTrans; // 开始位置
+    public Transform m_endTrans; // 结束位置
+    
+    public Vector3 m_startPos; // 开始位置
+    public Vector3 m_endPos; // 结束位置
     
     public bool m_isUseAnchor; // 是否使用位置锚点
     public Vector2 m_startAnchor = new Vector2(-0.5f, -0.5f); // 开始位置锚点
@@ -42,25 +45,31 @@ public class LightningChain : MonoBehaviour
         m_linePosList.Add(posList[1]);
 
         m_lineRender.positionCount = m_linePosList.Count;
+        
         for (int i = 0; i < m_linePosList.Count; i++) {
             m_lineRender.SetPosition(i, m_linePosList[i]);
         }
     }
 
+    public void UpdatePosList(Vector3 startPos, Vector3 endPos) {
+        m_startPos = startPos;
+        m_endPos = endPos;
+    }
+
     Vector3[] getStartAndEndPos() {
         // 获取起点和终点
-        Vector3 startPos = Vector3.zero, endPos = Vector3.zero;
-        if (m_isUseAnchor) {
+        Vector3 startPos = m_startPos, endPos = m_endPos;
+        if (m_isUseAnchor && this.GetComponent<RectTransform>() != null) {
             Rect rect = this.GetComponent<RectTransform>().rect;
             Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
             startPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x + m_startAnchor.x * rect.width, pos.y + m_startAnchor.y * rect.height, pos.z));
             endPos = Camera.main.ScreenToWorldPoint(new Vector3(pos.x + m_endAnchor.x * rect.width, pos.y + m_endAnchor.y * rect.height, pos.z));
         } else {
-            if (m_startPos != null) {
-                startPos = m_startPos.position;
+            if (m_startTrans != null) {
+                startPos = m_startTrans.position;
             }
-            if (m_endPos != null) {
-                endPos = m_endPos.position;
+            if (m_endTrans != null) {
+                endPos = m_endTrans.position;
             }
         }
         return new Vector3[]{startPos, endPos};

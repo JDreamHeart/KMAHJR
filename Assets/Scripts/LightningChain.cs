@@ -78,6 +78,7 @@ public class LightningChain : MonoBehaviour
     
     public void StopLightning() {
         m_isAwaking = false;
+        m_lineRender.useWorldSpace = false;
     }
 
     Vector3[] getStartAndEndPos() {

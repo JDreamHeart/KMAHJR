@@ -13,6 +13,8 @@ public class Pattern : MonoBehaviour
     LightningChain m_leftLightning;
     LightningChain m_rightLightning;
 
+    public PatternCtrl m_patternCtrl;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +39,13 @@ public class Pattern : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (m_patternCtrl != null && m_patternCtrl.IsDowning()) {
+            m_leftLightning.StopLightning();
+            m_rightLightning.StopLightning();
+        } else {
+            m_leftLightning.AwakeLightning();
+            m_rightLightning.AwakeLightning();
+        }
     }
 
 }

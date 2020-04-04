@@ -87,4 +87,8 @@ public class PatternCtrl : MonoBehaviour
         m_isChangeScrollVal = true;
         m_staticDuration = 0;
     }
+
+    public bool IsDowning() {
+        return m_isDowning;
+    }
 }

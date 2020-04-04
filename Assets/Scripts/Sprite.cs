@@ -122,16 +122,11 @@ public class Sprite : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collider) {
         if (collider.tag == "Reward") {
             Reward reward = collider.GetComponent<Reward>();
-            Transform scoreTrans = GameManager.Instance.GetScoreTrans();
-            if (scoreTrans != null) {
-                Transform rewardTrans = reward.GetComponent<Transform>();
-                Tweener tweener = rewardTrans.DOMove(scoreTrans.position, 1);
-                rewardTrans.DOScale(0.3f, 1);
-                tweener.SetEase(Ease.OutCubic);
-                tweener.OnComplete(() => {
-                    rewardTrans.DOScale(1, 0);
+            if (collider.name.Contains("DoubleJump")) {
+                reward.PlayDeadAnim(GameManager.Instance.GetSkillTrans(), () => {});
+            } else {
+                reward.PlayDeadAnim(GameManager.Instance.GetScoreTrans(), () => {
                     GameManager.Instance.AddScore(reward.GetScore());
-                    reward.onDead(); // 回调死亡事件
                 });
             }
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum Direction {
     Unknown = 0,
@@ -25,6 +26,9 @@ public class GameManager : MonoBehaviour
     int m_score;
     Text m_scoreText;
 
+    // 技能
+    SkillSpawn m_skillsSpawn;
+
     // 箭头
     Transform m_arrows;
 
@@ -45,6 +49,7 @@ public class GameManager : MonoBehaviour
         Transform infos = this.transform.Find("Infos");
         if (infos != null) {
             m_scoreText = infos.Find("Score").GetComponent<Text>();
+            m_skillsSpawn = infos.Find("Skills").GetComponent<SkillSpawn>();
         }
         // 重置分数
         ResetScore();
@@ -123,5 +128,18 @@ public class GameManager : MonoBehaviour
         if (m_scoreText != null) {
             m_scoreText.text = m_score.ToString();
         }
+    }
+
+    // 返回主页面
+    public void OnBackToHome() {
+        SceneManager.LoadScene("StartScene");
+    }
+
+    public Transform GetSkillTrans() {
+        return m_skillsSpawn.GetComponent<Transform>();
+    }
+    
+    public Transform AddSkill(GameObject obj) {
+        return m_skillsSpawn.AddSkill(obj);
     }
 }

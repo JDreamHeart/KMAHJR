@@ -27,10 +27,15 @@ public class LightningChain : MonoBehaviour
 
     List<Vector3> m_linePosList = new List<Vector3>(); // 线条位置列表
 
+    public bool m_isAwaking = true; // 是否唤醒
+    
+    public bool m_is3DLightning; // 是否为3D闪电链
+
     // Start is called before the first frame update
     void Start()
     {
         m_lineRender = this.GetComponent<LineRenderer>();
+        m_lineRender.useWorldSpace = false;
     }
 
     // Update is called once per frame
@@ -39,10 +44,17 @@ public class LightningChain : MonoBehaviour
         if (Time.timeScale == 0) {
             return;
         }
+        if (!m_isAwaking) {
+            return;
+        }
         m_linePosList.Clear();
         Vector3[] posList = getStartAndEndPos();
         collectLinPos(posList[0], posList[1], m_displacement);
         m_linePosList.Add(posList[1]);
+        
+        if (!m_lineRender.useWorldSpace) {
+            m_lineRender.useWorldSpace = true;
+        }
 
         m_lineRender.positionCount = m_linePosList.Count;
         
@@ -54,6 +66,18 @@ public class LightningChain : MonoBehaviour
     public void UpdatePosList(Vector3 startPos, Vector3 endPos) {
         m_startPos = startPos;
         m_endPos = endPos;
+    }
+
+    public bool IsAwaking() {
+        return m_isAwaking;
+    }
+
+    public void AwakeLightning() {
+        m_isAwaking = true;
+    }
+    
+    public void StopLightning() {
+        m_isAwaking = false;
     }
 
     Vector3[] getStartAndEndPos() {
@@ -85,7 +109,9 @@ public class LightningChain : MonoBehaviour
 
             midX += (float)(UnityEngine.Random.value - 0.5) * displacement;
             midY += (float)(UnityEngine.Random.value - 0.5) * displacement;
-            midZ += (float)(UnityEngine.Random.value - 0.5) * displacement;
+            if (m_is3DLightning) {
+                midZ += (float)(UnityEngine.Random.value - 0.5) * displacement;
+            }
 
             Vector3 midPos = new Vector3(midX,midY,midZ);
 

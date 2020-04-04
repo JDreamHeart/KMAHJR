@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 [AddComponentMenu("GameScripts/Reward")]
 
@@ -15,7 +16,7 @@ public class Reward : MonoBehaviour
     
     public float m_survivalTime = -1; // 生存时间（负数表示不限制生存时间）
 
-    public int m_maxTwinkleFrequency = 4; // 最大闪烁频率（次/秒）
+    public int m_maxTwinkleFrequency = 2; // 最大闪烁频率（次/秒）
 
     public float m_remainingTimeToTwinkle = 3; // 开始闪烁的剩余时间
 
@@ -58,6 +59,7 @@ public class Reward : MonoBehaviour
             onDead();
             return;
         }
+        this.OnUpdate();
     }
 
     public void onDead() {
@@ -103,5 +105,30 @@ public class Reward : MonoBehaviour
 
     public int GetScore() {
         return m_score;
+    }
+
+    public virtual void PlayDeadAnim(Vector3 targetPos, TweenCallback callback) {
+        Transform rewardTrans = this.GetComponent<Transform>();
+        Image img = this.GetComponent<Image>();
+        Tweener tweener = rewardTrans.DOMove(targetPos, 1);
+        Tweener scaleTweener = rewardTrans.DOScale(0.3f, 1);
+        img.DOFade(0.2f, 1);
+        tweener.SetEase(Ease.OutExpo);
+        tweener.OnComplete(() => {
+            rewardTrans.DOScale(1, 0);
+            img.DOFade(1, 0);
+            this.onDead(); // 回调死亡事件
+            callback(); // 执行动画回调
+        });
+    }
+    
+    public virtual void PlayDeadAnim(Transform targetTrans, TweenCallback callback) {
+        if (targetTrans != null) {
+            this.PlayDeadAnim(targetTrans.position, callback);
+        }
+    }
+
+    public virtual void OnUpdate() {
+
     }
 }

@@ -51,6 +51,7 @@ public class SkillSpawn : RewardSpawn
     public void UpdateCurSkillData() {
         SkillsInfo skillsInfo = GameManager.Instance.GetSkillTrans().GetComponent<SkillsInfo>();
         m_curSkillData = skillsInfo.GetSkillData();
+        m_generateDuration = 0; // 重置生成时间
     }
 
 }

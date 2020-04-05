@@ -117,6 +117,14 @@ public class GameManager : MonoBehaviour
         }
         m_sprite.OnRestartGame();
         m_result.gameObject.SetActive(false);
+        m_skillsInfo.Reset();
+        foreach (RewardSpawn spawn in m_rewardSpawnList) {
+            spawn.Reset(); // 重置
+            SkillSpawn ss = spawn.GetComponent<SkillSpawn>();
+            if (ss != null) {
+                ss.UpdateCurSkillData();
+            }
+        }
     }
 
     public Transform GetScoreTrans() {

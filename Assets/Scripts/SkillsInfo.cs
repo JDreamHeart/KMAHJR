@@ -52,13 +52,8 @@ public class SkillsInfo : MonoBehaviour
     }
 
     void Awake() {
-        if (m_doubleJumpPrefab != null) {
-            SkillData sd = new SkillData();
-            sd.stype = SkillType.DoubleJump;
-            sd.sprefab = m_doubleJumpPrefab;
-            updateSDConfig(sd);
-            m_skillMap[SkillType.DoubleJump] = sd;
-        }
+        initConfig();
+        resetSkillMap();
     }
     
     // Start is called before the first frame update
@@ -71,6 +66,17 @@ public class SkillsInfo : MonoBehaviour
     void Update()
     {
         
+    }
+
+    void resetSkillMap() {
+        m_skillMap.Clear();
+        if (m_doubleJumpPrefab != null) {
+            SkillData sd = new SkillData();
+            sd.stype = SkillType.DoubleJump;
+            sd.sprefab = m_doubleJumpPrefab;
+            updateSDConfig(sd);
+            m_skillMap.Add(SkillType.DoubleJump, sd);
+        }
     }
 
     void updateSkillsPos() {
@@ -109,5 +115,15 @@ public class SkillsInfo : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void Reset() {
+        // 删除技能
+        foreach (Skill skill in m_skillList) {
+            Destroy(skill.gameObject);
+        }
+        m_skillList.Clear();
+        // 重置技能表
+        resetSkillMap();
     }
 }

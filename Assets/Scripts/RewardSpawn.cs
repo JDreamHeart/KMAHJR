@@ -24,7 +24,7 @@ public class RewardSpawn : MonoBehaviour
     protected List<Reward> m_activeRewards = new List<Reward>(); // 激活状态中的奖励对象
     protected List<Reward> m_rcRewards = new List<Reward>(); // 回收后的奖励对象
 
-    float m_generateDuration;
+    protected float m_generateDuration;
 
     // Start is called before the first frame update
     void Start()
@@ -116,6 +116,17 @@ public class RewardSpawn : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void Reset() {
+        StartCoroutine(RecoverAllActiveReward());
+    }
+
+    IEnumerator RecoverAllActiveReward() {
+        while (m_activeRewards.Count > 0) {
+            RecoverReward(m_activeRewards[0]);
+            yield return null;
+        }
     }
 
     // 生成奖励的回调

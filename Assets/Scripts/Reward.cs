@@ -115,10 +115,11 @@ public class Reward : MonoBehaviour
         Transform rewardTrans = this.GetComponent<Transform>();
         Image img = this.GetComponent<Image>();
         Tweener tweener = rewardTrans.DOMove(targetPos, 1);
-        Tweener scaleTweener = rewardTrans.DOScale(0.3f, 1);
-        img.DOFade(0.2f, 1);
         tweener.SetEase(Ease.OutExpo);
-        tweener.OnComplete(() => {
+        Tweener scaleTweener = rewardTrans.DOScale(0.2f, 0.8f);
+        img.DOFade(0.2f, 0.8f);
+        scaleTweener.OnComplete(() => {
+            // 恢复缩放和透明度
             rewardTrans.DOScale(1, 0);
             img.DOFade(1, 0);
             this.onDead(); // 回调死亡事件

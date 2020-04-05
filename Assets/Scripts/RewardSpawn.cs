@@ -11,12 +11,13 @@ public class RewardSpawn : MonoBehaviour
 
     public bool m_isDown; // 是否向下的奖励
 
-    public int m_checkRewardRectLimit = 3; // 单次检测奖励Rect的次数限制
+    public int m_checkRewardLimit = 3; // 单次检测奖励的次数限制
 
     public int m_minRewardCount = 2; // 最小奖励数量
     public int m_maxRewardCount = 5; // 最大奖励数量
 
-    public float m_generateSeconds = 3f; // 生成奖励的时间间隔
+    public float m_minGenerateSeconds = 3; // 最小生成奖励的时间间隔
+    public float m_maxGenerateSeconds = 3; // 最大生成奖励的时间间隔
     
     float m_velocity = 3f;
 
@@ -37,7 +38,7 @@ public class RewardSpawn : MonoBehaviour
         if (m_activeRewards.Count < m_maxRewardCount) {
             // 生成奖励物
             m_generateDuration += Time.deltaTime;
-            if (GameManager.Instance.IsPlaying() && (m_generateDuration >= m_generateSeconds || m_activeRewards.Count < m_minRewardCount)) {
+            if (GameManager.Instance.IsPlaying() && (m_generateDuration >= Random.Range(m_minGenerateSeconds, m_maxGenerateSeconds) || m_activeRewards.Count < m_minRewardCount)) {
                 Reward reward = getReward(); // 获取块状
                 if (checkRewardRect(reward)) {
                     reward.SetRewardSpawn(this);
@@ -100,8 +101,7 @@ public class RewardSpawn : MonoBehaviour
 
     // 检测奖励范围
     bool checkRewardRect(Reward reward) {
-        for (int i = 0; i < m_checkRewardRectLimit; i++) {
-            Debug.Log(string.Format("checkRewardRect:::{0}", GameManager.Instance.CheckRewardRect(reward)));
+        for (int i = 0; i < m_checkRewardLimit; i++) {
             if (GameManager.Instance.CheckRewardRect(reward)) {
                 return true;
             } else {

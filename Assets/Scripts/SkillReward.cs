@@ -8,33 +8,10 @@ using DG.Tweening;
 
 public class SkillReward : Reward
 {
-    Transform m_targetTrans;
-
-    // public override void PlayDeadAnim(Vector3 targetPos, TweenCallback callback) {
-    //     Transform rewardTrans = this.GetComponent<Transform>();
-    //     Image img = this.GetComponent<Image>();
-    //     Tweener tweener = rewardTrans.DOScale(0.3f, 1);
-    //     img.DOFade(0.3f, 1);
-    //     tweener.SetEase(Ease.OutExpo);
-    //     tweener.OnComplete(() => {
-    //         rewardTrans.DOScale(1, 0);
-    //         img.DOFade(1, 0);
-    //         this.onDead(); // 回调死亡事件
-    //         callback(); // 执行动画回调
-    //     });
-    // }
-
-    // public override void PlayDeadAnim(Transform targetTrans, TweenCallback callback) {
-    //     m_targetTrans = targetTrans;
-    //     this.PlayDeadAnim(targetTrans.position, () => {
-    //         m_targetTrans = null;
-    //         callback();
-    //     });
-    // }
-
-    // public override void OnUpdate() {
-    //     if (m_targetTrans != null) {
-    //         this.transform.position = m_targetTrans.position;
-    //     }
-    // }
+    public override void PlayDeadAnim(Transform targetTrans, TweenCallback callback) {
+        if (targetTrans != null) {
+            Vector3 targetPos = Camera.main.WorldToScreenPoint(targetTrans.position) + new Vector3(-32, 0, 0);
+            this.PlayDeadAnim(Camera.main.ScreenToWorldPoint(targetPos), callback);
+        }
+    }
 }

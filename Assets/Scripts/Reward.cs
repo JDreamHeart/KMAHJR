@@ -13,6 +13,8 @@ public class Reward : MonoBehaviour
     public int m_score = 1;
 
     float m_velocity = -1; // 移动速度
+
+    public bool m_isStatic = true; // 是否为静态物体
     
     public float m_survivalTime = -1; // 生存时间（负数表示不限制生存时间）
 
@@ -52,8 +54,10 @@ public class Reward : MonoBehaviour
                 return;
             }
         }
-        // // 移动
-        // this.transform.Translate(0, m_velocity * Time.deltaTime, 0);
+        // 移动
+        if (!m_isStatic) {
+            this.transform.Translate(0, m_velocity * Time.deltaTime, 0);
+        }
         // 检测是否越界
         if (isOutboundary()) {
             onDead();
@@ -128,7 +132,21 @@ public class Reward : MonoBehaviour
         }
     }
 
+    // 更新时的回调
     public virtual void OnUpdate() {
 
+    }
+
+    // 检测是否部分重叠
+    public bool IsOverlaps(Reward reward) {
+        Rect rect1 = this.GetComponent<RectTransform>().rect;
+        Vector3 pos1 = Camera.main.WorldToScreenPoint(this.transform.position);
+        rect1.x = pos1.x;
+        rect1.y = pos1.y;
+        Rect rect2 = reward.GetComponent<RectTransform>().rect;
+        Vector3 pos2 = Camera.main.WorldToScreenPoint(reward.transform.position);
+        rect2.x = pos2.x;
+        rect2.y = pos2.y;
+        return rect1.Overlaps(rect2);
     }
 }

@@ -4,9 +4,8 @@ using UnityEngine;
 
 [AddComponentMenu("GameScripts/SkillSpawn")]
 
-public class SkillSpawn : MonoBehaviour
+public class SkillSpawn : RewardSpawn
 {
-    List<Skill> m_skillList = new List<Skill>();
 
     // Start is called before the first frame update
     void Start()
@@ -20,11 +19,4 @@ public class SkillSpawn : MonoBehaviour
         
     }
 
-    public Transform AddSkill(GameObject obj) {
-        GameObject newObj = Instantiate(obj, this.transform) as GameObject;
-        m_skillList.Add(newObj.AddComponent<Skill>());
-        RectTransform rt = newObj.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(64, 64);
-        return rt;
-    }
 }

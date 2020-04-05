@@ -7,38 +7,51 @@ using DG.Tweening;
 
 public class RewardSpawn : MonoBehaviour
 {
-    public Transform[] m_rewardPrefabs;
+    public Transform[] m_rewardPrefabs; // 奖励预制体
 
-    public bool m_isDown;
+    public bool m_isDown; // 是否向下的奖励
 
-    float m_seconds = 3f;
+    public int m_checkRewardRectLimit = 3; // 单次检测奖励Rect的次数限制
+
+    public int m_minRewardCount = 2; // 最小奖励数量
+    public int m_maxRewardCount = 5; // 最大奖励数量
+
+    public float m_generateSeconds = 3f; // 生成奖励的时间间隔
     
     float m_velocity = 3f;
 
-    List<Reward> m_rewards = new List<Reward>();
+    List<Reward> m_activeRewards = new List<Reward>(); // 激活状态中的奖励对象
+    List<Reward> m_rcRewards = new List<Reward>(); // 回收后的奖励对象
 
-    float m_duration;
+    float m_generateDuration;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        GameManager.Instance.AddRewardSpawn(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        // 生成奖励物
-        m_duration += Time.deltaTime;
-        if (GameManager.Instance.IsPlaying() && m_duration >= m_seconds) {
-            Reward reward = getReward(); // 获取块状
-            reward.SetRewardSpawn(this);
-            if (m_isDown) {
-                reward.UpdateVelocity(m_velocity);
-            } else {
-                reward.UpdateVelocity(-m_velocity);
+        if (m_activeRewards.Count < m_maxRewardCount) {
+            // 生成奖励物
+            m_generateDuration += Time.deltaTime;
+            if (GameManager.Instance.IsPlaying() && (m_generateDuration >= m_generateSeconds || m_activeRewards.Count < m_minRewardCount)) {
+                Reward reward = getReward(); // 获取块状
+                if (checkRewardRect(reward)) {
+                    reward.SetRewardSpawn(this);
+                    m_activeRewards.Add(reward);
+                    if (m_isDown) {
+                        reward.UpdateVelocity(m_velocity);
+                    } else {
+                        reward.UpdateVelocity(-m_velocity);
+                    }
+                    m_generateDuration = 0;
+                } else {
+                    RecoverReward(reward);
+                }
             }
-            m_duration = 0;
         }
     }
     
@@ -46,22 +59,23 @@ public class RewardSpawn : MonoBehaviour
         return m_isDown;
     }
 
-    public void UpdateSeconds(float seconds) {
-        m_seconds = seconds;
-    }
-
     public void UpdateVelocity(float velocity) {
         m_velocity = velocity;
     }
 
-    // 获取块状（使用缓存）
-    Reward getReward() {
+    // 获取奖励的随机位置
+    Vector3 getRewardPos() {
         Rect rect = this.GetComponent<RectTransform>().rect;
         Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
-        Vector3 targetPos = Camera.main.ScreenToWorldPoint(pos + new Vector3(rect.width * Random.Range(-0.5f, 0.5f), rect.height * Random.Range(-0.5f, 0.5f), 0));
-        if (m_rewards.Count > 0) {
-            Reward reward = m_rewards[0];
-            m_rewards.RemoveAt(0);
+        return Camera.main.ScreenToWorldPoint(pos + new Vector3(rect.width * Random.Range(-0.5f, 0.5f), rect.height * Random.Range(-0.5f, 0.5f), 0));
+    }
+
+    // 获取块状（使用缓存）
+    Reward getReward() {
+        Vector3 targetPos = getRewardPos();
+        if (m_rcRewards.Count > 0) {
+            Reward reward = m_rcRewards[0];
+            m_rcRewards.RemoveAt(0);
             reward.gameObject.SetActive(true);
             reward.GetComponent<Transform>().position = targetPos; // 更新位置
             return reward;
@@ -76,7 +90,26 @@ public class RewardSpawn : MonoBehaviour
     // 回收块状
     public void RecoverReward(Reward reward) {
         reward.gameObject.SetActive(false);
-        m_rewards.Add(reward);
+        m_rcRewards.Add(reward);
+        m_activeRewards.Remove(reward);
+    }
+
+    public List<Reward> GetActiveRewards() {
+        return m_activeRewards;
+    }
+
+    // 检测奖励范围
+    bool checkRewardRect(Reward reward) {
+        for (int i = 0; i < m_checkRewardRectLimit; i++) {
+            Debug.Log(string.Format("checkRewardRect:::{0}", GameManager.Instance.CheckRewardRect(reward)));
+            if (GameManager.Instance.CheckRewardRect(reward)) {
+                return true;
+            } else {
+                Vector3 targetPos = getRewardPos();
+                reward.GetComponent<Transform>().position = targetPos; // 更新位置
+            }
+        }
+        return false;
     }
 
 }

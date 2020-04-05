@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public enum Direction {
     Unknown = 0,
@@ -26,9 +27,6 @@ public class GameManager : MonoBehaviour
     int m_score;
     Text m_scoreText;
 
-    // 技能
-    SkillSpawn m_skillsSpawn;
-
     // 箭头
     Transform m_arrows;
 
@@ -37,19 +35,34 @@ public class GameManager : MonoBehaviour
     float m_curShowResultDelay = 0; // 当前显示结果的延时
     Transform m_result;
 
+    // 奖励生成器列表
+    List<RewardSpawn> m_rewardSpawnList = new List<RewardSpawn>();
+
+    // 技能
+    SkillsInfo m_skillsInfo;
+
+    void Awake() {
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        Instance = this;
         m_sprite = GameObject.FindGameObjectWithTag("Player").GetComponent<Sprite>();
         m_arrows = this.transform.Find("Arrows");
+        // 给箭头添加震动动画
+        Tweener leftTweener = m_arrows.Find("LeftArrow").DOShakeRotation(10, 2);
+        leftTweener.SetLoops(-1);
+        Tweener rightTweener = m_arrows.Find("RightArrow").DOShakeRotation(10, 2);
+        rightTweener.SetLoops(-1);
+        // 隐藏游戏结果
         m_result = this.transform.Find("Result");
         m_result.gameObject.SetActive(false);
         // 获取游戏信息
         Transform infos = this.transform.Find("Infos");
         if (infos != null) {
             m_scoreText = infos.Find("Score").GetComponent<Text>();
-            m_skillsSpawn = infos.Find("Skills").GetComponent<SkillSpawn>();
+            m_skillsInfo = infos.Find("Skills").GetComponent<SkillsInfo>();
         }
         // 重置分数
         ResetScore();
@@ -135,11 +148,33 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("StartScene");
     }
 
+    public void AddRewardSpawn(RewardSpawn spawn) {
+        if (!m_rewardSpawnList.Contains(spawn)) {
+            m_rewardSpawnList.Add(spawn);
+        }
+    }
+    
+    public void RemoveRewardSpawn(RewardSpawn spawn) {
+        m_rewardSpawnList.Remove(spawn);
+    }
+
+    // 检测奖励的范围
+    public bool CheckRewardRect(Reward targetReward) {
+        foreach (RewardSpawn spawn in m_rewardSpawnList) {
+            foreach (Reward reward in spawn.GetActiveRewards()) {
+                if (reward.IsOverlaps(targetReward)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public Transform GetSkillTrans() {
-        return m_skillsSpawn.GetComponent<Transform>();
+        return m_skillsInfo.GetComponent<Transform>();
     }
     
     public Transform AddSkill(GameObject obj) {
-        return m_skillsSpawn.AddSkill(obj);
+        return m_skillsInfo.AddSkill(obj);
     }
 }

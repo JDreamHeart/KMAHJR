@@ -66,7 +66,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Electricity");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
     }
 
     // Update is called once per frame
@@ -152,8 +154,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // 重开一局
+    public void OnTryAgain() {
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
+        // 跳转场景
+        Invoke("OnRestartGame", 0.3f);
+    }
+
     // 返回主页面
     public void OnBackToHome() {
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
+        // 跳转场景
+        Invoke("BackToStartScene", 0.3f);
+    }
+
+    public void BackToStartScene() {
         SceneManager.LoadScene("StartScene");
     }
 

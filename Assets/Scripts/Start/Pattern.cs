@@ -15,9 +15,12 @@ public class Pattern : MonoBehaviour
 
     public PatternCtrl m_patternCtrl;
 
+    AudioSource m_audioSource;
+
     // Start is called before the first frame update
     void Start()
     {
+        m_audioSource = this.GetComponent<AudioSource>();
         m_patternName = this.transform.Find("PatternName");
         m_patternTips = this.transform.Find("PatternTips");
         m_leftLightning = this.transform.Find("LeftLightning").GetComponent<LightningChain>();
@@ -42,9 +45,15 @@ public class Pattern : MonoBehaviour
         if (m_patternCtrl != null && m_patternCtrl.IsDowning()) {
             m_leftLightning.StopLightning();
             m_rightLightning.StopLightning();
+            if (m_audioSource.isPlaying) {
+                m_audioSource.Stop();
+            }
         } else {
             m_leftLightning.AwakeLightning();
             m_rightLightning.AwakeLightning();
+            if (!m_audioSource.isPlaying) {
+                m_audioSource.Play();
+            }
         }
     }
 

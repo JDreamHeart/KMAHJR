@@ -90,6 +90,9 @@ public class Sprite : MonoBehaviour
             m_rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         }
         updateFireFlip(0.5f);
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Jump");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
     }
 
     // 抓住
@@ -116,6 +119,9 @@ public class Sprite : MonoBehaviour
                 TurnRight();
             }
             m_rigidbody2D.velocity = collider.GetComponent<Rigidbody2D>().velocity; // 设置速度
+            // 播放音效
+            AudioClip clip = Resources.Load<AudioClip>("Sounds/Hit");
+            AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         }
     }
 
@@ -133,6 +139,9 @@ public class Sprite : MonoBehaviour
                     GameManager.Instance.AddScore(reward.GetScore());
                 });
             }
+            // 播放音效
+            AudioClip clip = Resources.Load<AudioClip>("Sounds/GainReward");
+            AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         }
     }
 
@@ -166,6 +175,9 @@ public class Sprite : MonoBehaviour
         // 隐藏主角
         this.gameObject.SetActive(false);
         this.transform.position = new Vector3(0, 0, 0);
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/DeadElectricity");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
     }
 
     public void OnStartGame() {

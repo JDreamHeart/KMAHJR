@@ -8,7 +8,7 @@ using DG.Tweening;
 
 public class Reward : MonoBehaviour
 {
-    RewardSpawn m_spawn;
+    protected RewardSpawn m_spawn;
 
     public int m_score = 1;
 
@@ -134,7 +134,7 @@ public class Reward : MonoBehaviour
     }
 
     // 更新时的回调
-    public virtual void OnUpdate() {
+    protected virtual void OnUpdate() {
 
     }
 

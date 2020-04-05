@@ -56,6 +56,6 @@ public class Board : MonoBehaviour
     }
     
     void OnCollisionEnter2D(Collision2D collision) {
-        Debug.Log("Board OnCollisionEnter2D===================");
+        // Debug.Log("Board OnCollisionEnter2D===================");
     }
 }

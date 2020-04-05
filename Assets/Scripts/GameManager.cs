@@ -43,11 +43,6 @@ public class GameManager : MonoBehaviour
 
     void Awake() {
         Instance = this;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
         m_sprite = GameObject.FindGameObjectWithTag("Player").GetComponent<Sprite>();
         m_arrows = this.transform.Find("Arrows");
         // 给箭头添加震动动画
@@ -66,6 +61,12 @@ public class GameManager : MonoBehaviour
         }
         // 重置分数
         ResetScore();
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
     }
 
     // Update is called once per frame
@@ -174,7 +175,7 @@ public class GameManager : MonoBehaviour
         return m_skillsInfo.GetComponent<Transform>();
     }
     
-    public Transform AddSkill(GameObject obj) {
-        return m_skillsInfo.AddSkill(obj);
+    public void AddSkill(SkillReward reward) {
+        m_skillsInfo.AddSkill(reward);
     }
 }

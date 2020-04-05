@@ -19,10 +19,10 @@ public class RewardSpawn : MonoBehaviour
     public float m_minGenerateSeconds = 3; // 最小生成奖励的时间间隔
     public float m_maxGenerateSeconds = 3; // 最大生成奖励的时间间隔
     
-    float m_velocity = 3f;
+    protected float m_velocity = 3f;
 
-    List<Reward> m_activeRewards = new List<Reward>(); // 激活状态中的奖励对象
-    List<Reward> m_rcRewards = new List<Reward>(); // 回收后的奖励对象
+    protected List<Reward> m_activeRewards = new List<Reward>(); // 激活状态中的奖励对象
+    protected List<Reward> m_rcRewards = new List<Reward>(); // 回收后的奖励对象
 
     float m_generateDuration;
 
@@ -30,6 +30,7 @@ public class RewardSpawn : MonoBehaviour
     void Start()
     {
         GameManager.Instance.AddRewardSpawn(this);
+        OnStart();
     }
 
     // Update is called once per frame
@@ -40,17 +41,21 @@ public class RewardSpawn : MonoBehaviour
             m_generateDuration += Time.deltaTime;
             if (GameManager.Instance.IsPlaying() && (m_generateDuration >= Random.Range(m_minGenerateSeconds, m_maxGenerateSeconds) || m_activeRewards.Count < m_minRewardCount)) {
                 Reward reward = getReward(); // 获取块状
-                if (checkRewardRect(reward)) {
-                    reward.SetRewardSpawn(this);
-                    m_activeRewards.Add(reward);
-                    if (m_isDown) {
-                        reward.UpdateVelocity(m_velocity);
+                if (reward != null) {
+                    if (checkRewardRect(reward)) {
+                        reward.SetRewardSpawn(this);
+                        m_activeRewards.Add(reward);
+                        if (m_isDown) {
+                            reward.UpdateVelocity(m_velocity);
+                        } else {
+                            reward.UpdateVelocity(-m_velocity);
+                        }
+                        m_generateDuration = 0;
+                        // 生成奖励的回调
+                        this.OnGenerateReward(reward);
                     } else {
-                        reward.UpdateVelocity(-m_velocity);
+                        RecoverReward(reward);
                     }
-                    m_generateDuration = 0;
-                } else {
-                    RecoverReward(reward);
                 }
             }
         }
@@ -65,14 +70,14 @@ public class RewardSpawn : MonoBehaviour
     }
 
     // 获取奖励的随机位置
-    Vector3 getRewardPos() {
+    protected virtual Vector3 getRewardPos() {
         Rect rect = this.GetComponent<RectTransform>().rect;
         Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
         return Camera.main.ScreenToWorldPoint(pos + new Vector3(rect.width * Random.Range(-0.5f, 0.5f), rect.height * Random.Range(-0.5f, 0.5f), 0));
     }
 
     // 获取块状（使用缓存）
-    Reward getReward() {
+    protected virtual Reward getReward() {
         Vector3 targetPos = getRewardPos();
         if (m_rcRewards.Count > 0) {
             Reward reward = m_rcRewards[0];
@@ -93,6 +98,7 @@ public class RewardSpawn : MonoBehaviour
         reward.gameObject.SetActive(false);
         m_rcRewards.Add(reward);
         m_activeRewards.Remove(reward);
+        OnRecoverReward(reward);
     }
 
     public List<Reward> GetActiveRewards() {
@@ -110,6 +116,21 @@ public class RewardSpawn : MonoBehaviour
             }
         }
         return false;
+    }
+
+    // 生成奖励的回调
+    protected virtual void OnGenerateReward(Reward reward) {
+
+    }
+
+    // 回收奖励对象的回调
+    protected virtual void OnRecoverReward(Reward reward) {
+
+    }
+
+    // 开始后的回调
+    protected virtual void OnStart(){
+
     }
 
 }

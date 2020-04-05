@@ -8,10 +8,30 @@ using DG.Tweening;
 
 public class SkillReward : Reward
 {
-    public override void PlayDeadAnim(Transform targetTrans, TweenCallback callback) {
-        if (targetTrans != null) {
-            Vector3 targetPos = Camera.main.WorldToScreenPoint(targetTrans.position) + new Vector3(-32, 0, 0);
-            this.PlayDeadAnim(Camera.main.ScreenToWorldPoint(targetPos), callback);
+    public SkillData? skillData {get; set;}
+
+    
+    public override void PlayDeadAnim(Vector3 targetPos, TweenCallback callback) {
+        // 更新位置
+        targetPos = Camera.main.ScreenToWorldPoint(Camera.main.WorldToScreenPoint(targetPos) + new Vector3(-32, 0, 0));
+        // 执行动画
+        Transform rewardTrans = this.GetComponent<Transform>();
+        Image img = this.GetComponent<Image>();
+        Tweener tweener = rewardTrans.DOMove(targetPos, 0.8f);
+        tweener.SetEase(Ease.OutExpo);
+        // 恢复缩放和透明度
+        rewardTrans.DOScale(64/this.GetComponent<RectTransform>().rect.width, 0);
+        tweener.OnComplete(() => {
+            // 恢复缩放和透明度
+            rewardTrans.DOScale(1, 0);
+            this.onDead(); // 回调死亡事件
+            callback(); // 执行动画回调
+        });
+    }
+
+    public void OnAddSkill() {
+        if (m_spawn != null) {
+            m_spawn.GetComponent<SkillSpawn>().UpdateCurSkillData();
         }
     }
 }

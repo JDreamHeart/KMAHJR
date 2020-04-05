@@ -66,9 +66,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // 播放音效
-        AudioClip clip = Resources.Load<AudioClip>("Sounds/Electricity");
-        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
+        
     }
 
     // Update is called once per frame

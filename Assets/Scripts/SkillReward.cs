@@ -24,7 +24,7 @@ public class SkillReward : Reward
         tweener.OnComplete(() => {
             // 恢复缩放和透明度
             rewardTrans.DOScale(1, 0);
-            this.onDead(); // 回调死亡事件
+            this.OnDead(); // 回调死亡事件
             callback(); // 执行动画回调
         });
     }

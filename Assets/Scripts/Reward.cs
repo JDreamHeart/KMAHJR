@@ -50,7 +50,7 @@ public class Reward : MonoBehaviour
                     }
                 }
             } else {
-                onDead();
+                OnDead();
                 return;
             }
         }
@@ -60,13 +60,13 @@ public class Reward : MonoBehaviour
         }
         // 检测是否越界
         if (isOutboundary()) {
-            onDead();
+            OnDead();
             return;
         }
         this.OnUpdate();
     }
 
-    public void onDead() {
+    public void OnDead() {
         m_duration = 0;
         m_canvasGroup.alpha = 1;
         if (m_spawn != null) {
@@ -104,7 +104,7 @@ public class Reward : MonoBehaviour
     }
 
     // void OnTriggerEnter2D(Collider2D collider) {
-    //     onDead();
+    //     OnDead();
     // }
 
     public int GetScore() {
@@ -122,7 +122,7 @@ public class Reward : MonoBehaviour
             // 恢复缩放和透明度
             rewardTrans.DOScale(1, 0);
             img.DOFade(1, 0);
-            this.onDead(); // 回调死亡事件
+            this.OnDead(); // 回调死亡事件
             callback(); // 执行动画回调
         });
     }

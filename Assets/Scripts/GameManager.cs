@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     Text m_scoreText;
 
     // 箭头
-    Transform m_arrows;
+    Transform m_startCtrl;
 
     // 游戏结果
     public float m_showResultDelay = 1; // 显示结果的延时
@@ -41,15 +41,14 @@ public class GameManager : MonoBehaviour
     // 技能
     SkillsInfo m_skillsInfo;
 
+    // 音频源
+    AudioSource m_audioSource;
+
     void Awake() {
         Instance = this;
+        m_audioSource = this.GetComponent<AudioSource>();
         m_sprite = GameObject.FindGameObjectWithTag("Player").GetComponent<Sprite>();
-        m_arrows = this.transform.Find("Arrows");
-        // 给箭头添加震动动画
-        Tweener leftTweener = m_arrows.Find("LeftArrow").DOShakeRotation(10, 2);
-        leftTweener.SetLoops(-1);
-        Tweener rightTweener = m_arrows.Find("RightArrow").DOShakeRotation(10, 2);
-        rightTweener.SetLoops(-1);
+        m_startCtrl = this.transform.Find("StartCtrl");
         // 隐藏游戏结果
         m_result = this.transform.Find("Result");
         m_result.gameObject.SetActive(false);
@@ -92,11 +91,13 @@ public class GameManager : MonoBehaviour
 
     public void OnStartGame() {
         m_isPlaying = true;
-        if (m_arrows != null) {
-            m_arrows.gameObject.SetActive(false);
+        if (m_startCtrl != null) {
+            m_startCtrl.gameObject.SetActive(false);
         }
         m_sprite.OnStartGame();
         m_curShowResultDelay = 0;
+        // 重置音量
+        m_audioSource.volume = 0.2f;
     }
     
     public void OnStopGame() {
@@ -107,13 +108,16 @@ public class GameManager : MonoBehaviour
         Transform maxScoreVal = resultContent.Find("RankingList").Find("MaxScoreValue");
         maxScoreVal.GetComponent<Text>().text = m_score.ToString();
         m_result.gameObject.SetActive(true);
+        // 播放动画
+        resultContent.DOScale(0, 0);
+        resultContent.DOScale(1, 0.3f);
     }
 
     public void OnRestartGame() {
         m_isPlaying = false;
         ResetScore();
-        if (m_arrows != null) {
-            m_arrows.gameObject.SetActive(true);
+        if (m_startCtrl != null) {
+            m_startCtrl.gameObject.SetActive(true);
         }
         m_sprite.OnRestartGame();
         m_result.gameObject.SetActive(false);
@@ -125,6 +129,8 @@ public class GameManager : MonoBehaviour
                 ss.UpdateCurSkillData();
             }
         }
+        // 重置音量
+        m_audioSource.volume = 0.8f;
     }
 
     public Transform GetScoreTrans() {

@@ -119,12 +119,13 @@ public class RewardSpawn : MonoBehaviour
     }
 
     public void Reset() {
+        m_generateDuration = 0;
         StartCoroutine(RecoverAllActiveReward());
     }
 
     IEnumerator RecoverAllActiveReward() {
         while (m_activeRewards.Count > 0) {
-            RecoverReward(m_activeRewards[0]);
+            m_activeRewards[0].OnDead();
             yield return null;
         }
     }

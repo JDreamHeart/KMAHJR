@@ -8,7 +8,7 @@ using DG.Tweening;
 
 public class Sprite : MonoBehaviour
 {
-    public float m_speed = 3; // 速度值
+    public float m_speed = 10; // 速度值
 
     public float m_offsetY = 100; // 纵轴偏移值
 
@@ -19,7 +19,8 @@ public class Sprite : MonoBehaviour
     bool m_isJumping; // 是否正处于跳跃状态
 
     int m_jumpCount = 0; // 跳跃次数
-    int m_jumpCountLimit = 2; // 跳跃次数显示
+    int m_jumpCntActualLimit = 2; // 跳跃次数实际限制
+    public int m_jumpCountLimit = 2; // 跳跃次数限制
 
     ParticleSystem m_fireParticle;
     ParticleSystem m_sparkParticle;
@@ -28,9 +29,8 @@ public class Sprite : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // 查找化节点或组件
         m_rigidbody2D = this.GetComponent<Rigidbody2D>();
-        // 将精灵刚体类型设为Kinematic
-        m_rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
         // 遍历子节点
         foreach (Transform trans in this.GetComponentsInChildren<Transform>()) {
             if(trans.name.CompareTo("Fire") == 0) {
@@ -40,6 +40,8 @@ public class Sprite : MonoBehaviour
                 m_sparkParticle = trans.GetComponent<ParticleSystem>();
             }
         }
+        // 初始化玩家
+        OnRestartGame();
     }
 
     // Update is called once per frame
@@ -75,7 +77,8 @@ public class Sprite : MonoBehaviour
 
     // 跳跃
     public void Jump() {
-        if (m_jumpCount >= m_jumpCountLimit) {
+        int jumpCntLimit = Mathf.Max(m_jumpCntActualLimit, m_jumpCountLimit);
+        if (m_jumpCount >= jumpCntLimit) {
             return;
         }
         // 重置状态
@@ -84,7 +87,7 @@ public class Sprite : MonoBehaviour
         m_jumpCount += 1;
         // 更新速度
         float xSpeed = m_direction == Direction.Right ? m_speed : -m_speed;
-        m_rigidbody2D.velocity = new Vector2(xSpeed * m_jumpCount, m_speed * 0.2f * m_jumpCount); // 设置速度
+        m_rigidbody2D.velocity = new Vector2(xSpeed * m_jumpCount / jumpCntLimit, 0.2f * m_speed * m_jumpCount / jumpCntLimit); // 设置速度
         // 将body type设为Dynamic
         if (m_rigidbody2D.bodyType != RigidbodyType2D.Dynamic) {
             m_rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
@@ -189,5 +192,14 @@ public class Sprite : MonoBehaviour
         this.gameObject.SetActive(true);
         // 将精灵刚体类型设为Kinematic
         m_rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+        // 重置实际跳跃次数限制
+        m_jumpCntActualLimit = m_jumpCountLimit;
+    }
+
+    // 更新跳跃次数限制
+    public void UpdateJumpCountLimit(int limit) {
+        if (limit > 0) {
+            m_jumpCntActualLimit = limit;
+        }
     }
 }

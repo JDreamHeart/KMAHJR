@@ -36,6 +36,8 @@ public class SkillsInfo : MonoBehaviour
 
     List<Skill> m_skillList = new List<Skill>();
 
+    Sprite m_sprite; // 主角精灵
+
     protected virtual void initConfig() {
         // 初始化次数限制配置
         TimesConfig.Add(SkillType.DoubleJump, 1);
@@ -59,7 +61,7 @@ public class SkillsInfo : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        m_sprite = GameObject.FindGameObjectWithTag("Player").GetComponent<Sprite>();
     }
 
     // Update is called once per frame
@@ -103,6 +105,8 @@ public class SkillsInfo : MonoBehaviour
                 m_skillMap.Remove(sd.stype);
             }
         }
+        // 添加技能回调
+        onAddSkill(sd);
     }
 
     public SkillData? GetSkillData() {
@@ -125,5 +129,13 @@ public class SkillsInfo : MonoBehaviour
         m_skillList.Clear();
         // 重置技能表
         resetSkillMap();
+    }
+
+    void onAddSkill(SkillData sd) {
+        switch (sd.stype) {
+        case SkillType.DoubleJump:
+            m_sprite.UpdateJumpCountLimit(2);
+            break;
+        }
     }
 }

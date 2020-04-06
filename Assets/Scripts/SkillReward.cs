@@ -9,7 +9,6 @@ using DG.Tweening;
 public class SkillReward : Reward
 {
     public SkillData? skillData {get; set;}
-
     
     public override void PlayDeadAnim(Vector3 targetPos, TweenCallback callback) {
         // 更新位置
@@ -33,5 +32,10 @@ public class SkillReward : Reward
         if (m_spawn != null) {
             m_spawn.GetComponent<SkillSpawn>().UpdateCurSkillData();
         }
+    }
+    
+    // 同步分数文本
+    protected override void syncScoreText() {
+        
     }
 }

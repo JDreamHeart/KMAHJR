@@ -24,12 +24,13 @@ public class Reward : MonoBehaviour
 
     float m_duration;
 
-    CanvasGroup m_canvasGroup;
+    protected CanvasGroup m_canvasGroup;
 
     // Start is called before the first frame update
     void Start()
     {
         m_canvasGroup = this.GetComponent<CanvasGroup>();
+        syncScoreText();
     }
 
     // Update is called once per frame
@@ -119,11 +120,14 @@ public class Reward : MonoBehaviour
         Tweener scaleTweener = rewardTrans.DOScale(0.2f, 0.8f);
         img.DOFade(0.2f, 0.8f);
         scaleTweener.OnComplete(() => {
+            callback(); // 执行动画回调
+        });
+        tweener.OnComplete(() => {
             // 恢复缩放和透明度
             rewardTrans.DOScale(1, 0);
             img.DOFade(1, 0);
-            this.OnDead(); // 回调死亡事件
-            callback(); // 执行动画回调
+            // 回调死亡事件
+            this.OnDead();
         });
     }
     
@@ -149,5 +153,13 @@ public class Reward : MonoBehaviour
         rect2.x = pos2.x;
         rect2.y = pos2.y;
         return rect1.Overlaps(rect2);
+    }
+
+    // 同步分数文本
+    protected virtual void syncScoreText() {
+        Transform score = this.transform.Find("Score");
+        if (score != null) {
+            score.GetComponent<Text>().text = m_score.ToString();
+        }
     }
 }

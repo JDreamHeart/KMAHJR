@@ -15,18 +15,21 @@ public class StartGameManager : MonoBehaviour
     public static StartGameManager Instance;
 
     Transform m_patternName;
+    
+    Transform m_patternDetail;
 
     PatternType m_patternType;
 
     void Awake() {
         Instance = this;
         m_patternName = this.transform.Find("Pattern").Find("PatternName");
+        m_patternDetail = this.transform.Find("PatternDetail");
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        m_patternDetail.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -62,5 +65,21 @@ public class StartGameManager : MonoBehaviour
                 SceneManager.LoadScene("NormalScene"); // 启动普通模式场景
                 break;
         }
+    }
+
+    public void ShowPatternDetail() {
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
+        // 显示模式详情
+        m_patternDetail.gameObject.SetActive(true);
+    }
+    
+    public void HidePatternDetail() {
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
+        // 隐藏模式详情
+        m_patternDetail.gameObject.SetActive(false);
     }
 }

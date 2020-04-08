@@ -26,7 +26,7 @@ public class Pattern : MonoBehaviour
         m_leftLightning = this.transform.Find("LeftLightning").GetComponent<LightningChain>();
         m_rightLightning = this.transform.Find("RightLightning").GetComponent<LightningChain>();
         // 暂时隐藏提示
-        m_patternTips.gameObject.SetActive(false);
+        // m_patternTips.gameObject.SetActive(false);
         // 获取闪电位置
         Vector3 pos = Camera.main.WorldToScreenPoint(m_patternName.position);
         Vector3 startPos = Camera.main.ScreenToWorldPoint(new Vector3(0, pos.y, pos.z));

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public enum PatternType {
     Normal = 0,
@@ -73,6 +74,8 @@ public class StartGameManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         // 显示模式详情
         m_patternDetail.gameObject.SetActive(true);
+        m_patternDetail.Find("Detail").DOScale(0, 0);
+        m_patternDetail.Find("Detail").DOScale(1, 0.3f);
     }
     
     public void HidePatternDetail() {
@@ -80,6 +83,9 @@ public class StartGameManager : MonoBehaviour
         AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         // 隐藏模式详情
-        m_patternDetail.gameObject.SetActive(false);
+        Tweener tweener = m_patternDetail.Find("Detail").DOScale(0, 0.2f);
+        tweener.OnComplete(() => {
+            m_patternDetail.gameObject.SetActive(false);
+        });
     }
 }

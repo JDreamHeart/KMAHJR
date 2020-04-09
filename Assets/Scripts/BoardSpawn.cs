@@ -14,9 +14,19 @@ public class BoardSpawn : MonoBehaviour
 
     public float m_lightningOffsetX;
 
-    float m_seconds = 3f;
+    float m_duration = 2f;
+
+    public float m_maxDuration = 2f;
     
-    float m_velocity = 3f;
+    public float m_maxReducedDuration = 1f;
+    
+    float m_velocity = 4f;
+    
+    public float m_minVelocity = 4f;
+    
+    public float m_maxIncreasedVelocity = 4f;
+
+    public int m_maxGrowthScore = 400;
 
     List<Board> m_rcBoards = new List<Board>();
     
@@ -27,6 +37,8 @@ public class BoardSpawn : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        GameManager.Instance.AddBoardSpawn(this);
+        Reset();
         StartCoroutine(SpawnBoard());
     }
 
@@ -36,6 +48,12 @@ public class BoardSpawn : MonoBehaviour
         // 创建闪电链
         List<Vector3[]> posList = getLightningPosList();
         createLightningList(posList);
+        // 更新速度和持续时间
+        if (GameManager.Instance.GetScore() <= m_maxGrowthScore) {
+            float rateOfChange = (float)GameManager.Instance.GetScore() / (float)m_maxGrowthScore;
+            m_duration = m_maxDuration - m_maxReducedDuration * rateOfChange;
+            m_velocity = m_minVelocity + m_maxIncreasedVelocity * rateOfChange;
+        }
     }
     
     public bool IsRight() {
@@ -43,7 +61,7 @@ public class BoardSpawn : MonoBehaviour
     }
 
     public void UpdateSeconds(float seconds) {
-        m_seconds = seconds;
+        m_duration = seconds;
     }
 
     public void UpdateVelocity(float velocity) {
@@ -62,7 +80,7 @@ public class BoardSpawn : MonoBehaviour
                 rigidbody2D.velocity = new Vector2(0, -m_velocity);
             }
             // 等待一段时间
-            yield return new WaitForSeconds(m_seconds);
+            yield return new WaitForSeconds(m_duration);
         }
     }
 
@@ -163,6 +181,11 @@ public class BoardSpawn : MonoBehaviour
         foreach (LightningChain lc in lcList) {
             m_lightningList.Insert(0, lc);
         }
+    }
+
+    public void Reset() {
+        m_duration = m_maxDuration;
+        m_velocity = m_minVelocity;
     }
 
 }

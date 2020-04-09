@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour
     public float m_showResultDelay = 1; // 显示结果的延时
     float m_curShowResultDelay = 0; // 当前显示结果的延时
     Transform m_result;
+    
+    // 板块生成器列表
+    List<BoardSpawn> m_boardSpawnList = new List<BoardSpawn>();
 
     // 奖励生成器列表
     List<RewardSpawn> m_rewardSpawnList = new List<RewardSpawn>();
@@ -129,6 +132,9 @@ public class GameManager : MonoBehaviour
                 ss.UpdateCurSkillData();
             }
         }
+        foreach (BoardSpawn spawn in m_boardSpawnList) {
+            spawn.Reset(); // 重置
+        }
         // 重置音量
         m_audioSource.volume = 0.8f;
     }
@@ -178,6 +184,16 @@ public class GameManager : MonoBehaviour
 
     public void BackToStartScene() {
         SceneManager.LoadScene("StartScene");
+    }
+    
+    public void AddBoardSpawn(BoardSpawn spawn) {
+        if (!m_boardSpawnList.Contains(spawn)) {
+            m_boardSpawnList.Add(spawn);
+        }
+    }
+    
+    public void RemoveBoardSpawn(BoardSpawn spawn) {
+        m_boardSpawnList.Remove(spawn);
     }
 
     public void AddRewardSpawn(RewardSpawn spawn) {

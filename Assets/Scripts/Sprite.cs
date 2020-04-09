@@ -131,20 +131,22 @@ public class Sprite : MonoBehaviour
     void OnTriggerEnter2D(Collider2D collider) {
         if (collider.tag == "Reward") {
             Reward reward = collider.GetComponent<Reward>();
-            if (collider.name.Contains("DoubleJump")) {
-                reward.PlayDeadAnim(GameManager.Instance.GetSkillTrans(), () => {
-                    SkillReward sr = reward.GetComponent<SkillReward>();
-                    GameManager.Instance.AddSkill(sr);
-                    sr.OnAddSkill();
-                });
-            } else {
-                reward.PlayDeadAnim(GameManager.Instance.GetScoreTrans(), () => {
-                    GameManager.Instance.AddScore(reward.GetScore());
-                });
+            if (reward.enabled) {
+                if (collider.name.Contains("DoubleJump")) {
+                    reward.PlayDeadAnim(GameManager.Instance.GetSkillTrans(), () => {
+                        SkillReward sr = reward.GetComponent<SkillReward>();
+                        GameManager.Instance.AddSkill(sr);
+                        sr.OnAddSkill();
+                    });
+                } else {
+                    reward.PlayDeadAnim(GameManager.Instance.GetScoreTrans(), () => {
+                        GameManager.Instance.AddScore(reward.GetScore());
+                    });
+                }
+                // 播放音效
+                AudioClip clip = Resources.Load<AudioClip>("Sounds/GainReward");
+                AudioSource.PlayClipAtPoint(clip, Vector3.zero);
             }
-            // 播放音效
-            AudioClip clip = Resources.Load<AudioClip>("Sounds/GainReward");
-            AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         }
     }
 

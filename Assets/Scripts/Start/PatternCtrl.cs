@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[ExecuteInEditMode]
+
 [AddComponentMenu("GameScripts/StartPatternCtrl")]
 
 public class PatternCtrl : MonoBehaviour
@@ -34,7 +36,9 @@ public class PatternCtrl : MonoBehaviour
         float sizeX = Screen.width + Mathf.Max(0, this.transform.childCount - 1) * m_spacing;
         rt.sizeDelta = new Vector2(sizeX, rt.rect.height);
         // 更新目标项下标
-        this.updateTargetItemIdx(0);
+        if (Application.isPlaying) {
+            this.updateTargetItemIdx(0);
+        }
     }
 
     // Update is called once per frame

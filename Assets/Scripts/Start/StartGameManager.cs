@@ -7,6 +7,7 @@ using DG.Tweening;
 
 public enum PatternType {
     Normal = 0,
+    NoGravity = 1, // 无重力模式
 }
 
 [AddComponentMenu("GameScripts/StartGameManager")]

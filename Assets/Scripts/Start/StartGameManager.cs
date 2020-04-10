@@ -7,7 +7,7 @@ using DG.Tweening;
 
 public enum PatternType {
     Normal = 0,
-    NoGravity = 1, // 无重力模式
+    Guardian = 1, // 守护模式
 }
 
 [AddComponentMenu("GameScripts/StartGameManager")]
@@ -19,25 +19,39 @@ public class StartGameManager : MonoBehaviour
     Transform m_patternName;
     
     Transform m_patternDetail;
+    Transform m_patternDetailDetail;
 
     PatternType m_patternType;
+
+    Dictionary<PatternType, GameObject> m_patternDetailMap = new Dictionary<PatternType, GameObject>();
 
     void Awake() {
         Instance = this;
         m_patternName = this.transform.Find("Pattern").Find("PatternName");
         m_patternDetail = this.transform.Find("PatternDetail");
+        m_patternDetailDetail = m_patternDetail.Find("Detail");
+        m_patternDetailMap.Add(PatternType.Normal, m_patternDetailDetail.Find("Normal").gameObject);
+        m_patternDetailMap.Add(PatternType.Guardian, m_patternDetailDetail.Find("Guardian").gameObject);
     }
 
     // Start is called before the first frame update
     void Start()
     {
         m_patternDetail.gameObject.SetActive(false);
+        hideAllPatternDetail();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    // 隐藏所有模式详情
+    void hideAllPatternDetail() {
+        foreach (GameObject val in m_patternDetailMap.Values) {
+            val.SetActive(false);
+        }
     }
 
     // 更新模式名称
@@ -75,8 +89,12 @@ public class StartGameManager : MonoBehaviour
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         // 显示模式详情
         m_patternDetail.gameObject.SetActive(true);
-        m_patternDetail.Find("Detail").DOScale(0, 0);
-        m_patternDetail.Find("Detail").DOScale(1, 0.3f);
+        hideAllPatternDetail();
+        if (m_patternDetailMap.ContainsKey(m_patternType)) {
+            m_patternDetailMap[m_patternType].SetActive(true);
+        }
+        m_patternDetailDetail.DOScale(0, 0);
+        m_patternDetailDetail.DOScale(1, 0.3f);
     }
     
     public void HidePatternDetail() {
@@ -84,7 +102,7 @@ public class StartGameManager : MonoBehaviour
         AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         // 隐藏模式详情
-        Tweener tweener = m_patternDetail.Find("Detail").DOScale(0, 0.2f);
+        Tweener tweener = m_patternDetailDetail.DOScale(0, 0.2f);
         tweener.OnComplete(() => {
             m_patternDetail.gameObject.SetActive(false);
         });

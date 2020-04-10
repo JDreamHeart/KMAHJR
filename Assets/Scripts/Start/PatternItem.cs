@@ -8,9 +8,6 @@ public class PatternItem : MonoBehaviour
 {
     public string m_name;
     public PatternType m_type;
-    public string m_description;
-
-    public SkillType[] m_skillTypes;
 
     // Start is called before the first frame update
     void Start()

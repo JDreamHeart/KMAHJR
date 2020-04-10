@@ -21,6 +21,8 @@ public class Reward : MonoBehaviour
     public int m_maxTwinkleFrequency = 2; // 最大闪烁频率（次/秒）
 
     public float m_remainingTimeToTwinkle = 3; // 开始闪烁的剩余时间
+    
+    public bool m_isAllowSyncScore = true; // 是否允许同步分数
 
     float m_duration;
 
@@ -157,6 +159,9 @@ public class Reward : MonoBehaviour
 
     // 同步分数文本
     protected virtual void syncScoreText() {
+        if (!m_isAllowSyncScore) {
+            return;
+        }
         Transform score = this.transform.Find("Score");
         if (score != null) {
             score.GetComponent<Text>().text = m_score.ToString();

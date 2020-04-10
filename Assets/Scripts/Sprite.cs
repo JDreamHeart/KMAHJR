@@ -114,6 +114,13 @@ public class Sprite : MonoBehaviour
             if (direction != m_direction) {
                 return;
             }
+            // 检测是否在板块的左右边界
+            Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
+            RectTransform rt = collider.GetComponent<RectTransform>();
+            Vector3 cpos = Camera.main.WorldToScreenPoint(rt.transform.position);
+            if (pos.x > cpos.x - rt.rect.width / 2 && pos.x < cpos.x + rt.rect.width / 2) {
+                return;
+            }
             Hold(); // 抓住Board
             // 更新精灵的方向
             if (board.IsRight()) {

@@ -58,13 +58,15 @@
 
 ## 游戏流程
 #### 开始游戏场景
-【开始游戏场景截图】
+![开始游戏场景](./MD/StartScene.jpg)
 
 #### 普通模式场景
-【普通模式截图】
+![普通模式场景](./MD/NormalScene.jpg)
 
 #### 游戏运行视频
-【手机进行录屏】
+<video id="video" controls="" preload="none">
+    <source id="mp4" src="./MD/GameStage.mp4" type="video/mp4">
+</video>
 
 ## 后续扩展
 后续主要针对游戏界面进行优化，以及开发出更多不一样的模式（在**游戏流程**中的开始游戏场景进行模式切换）来丰富游戏玩法。  

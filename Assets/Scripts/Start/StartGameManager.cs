@@ -16,21 +16,27 @@ public class StartGameManager : MonoBehaviour
 {
     public static StartGameManager Instance;
 
-    Transform m_patternName;
-    
-    Transform m_patternDetail;
-    Transform m_patternDetailDetail;
+    Transform m_enterBtn; // 进入游戏按钮
 
-    PatternType m_patternType;
+    Transform m_patternName; // 模式名称
+    
+    Transform m_patternDetail; // 模式详情
+    Transform m_patternDetailDetail; // 模式详情的细节
+
+    PatternType m_patternType; // 当前所选择的模式类型
 
     Dictionary<PatternType, GameObject> m_patternDetailMap = new Dictionary<PatternType, GameObject>();
+    Dictionary<PatternType, string> m_patternSceneMap = new Dictionary<PatternType, string>();
 
     void Awake() {
+        GameData.Instance.Load();
         Instance = this;
+        m_enterBtn = this.transform.Find("Enter");
         m_patternName = this.transform.Find("Pattern").Find("PatternName");
         m_patternDetail = this.transform.Find("PatternDetail");
         m_patternDetailDetail = m_patternDetail.Find("Detail");
-        m_patternDetailMap.Add(PatternType.Normal, m_patternDetailDetail.Find("Normal").gameObject);
+        m_patternDetailMap.Add(PatternType.Normal, m_patternDetailDetail.Find("Normal").gameObject); // 模式详情
+        m_patternSceneMap.Add(PatternType.Normal, "NormalScene"); // 对应模式的场景
         m_patternDetailMap.Add(PatternType.Guardian, m_patternDetailDetail.Find("Guardian").gameObject);
     }
 
@@ -65,6 +71,15 @@ public class StartGameManager : MonoBehaviour
         Text nameText = m_patternName.Find("NameText").GetComponent<Text>();
         nameText.text = string.Format("- <color=yellow>{0}模式</color> -", name);
         m_patternType = type;
+        // 校验模式场景
+        Text enterText = m_enterBtn.Find("Text").GetComponent<Text>();
+        if (m_patternSceneMap.ContainsKey(m_patternType)) {
+            m_enterBtn.GetComponent<Button>().interactable = true;
+            enterText.DOFade(1, 0.1f);
+        } else {
+            m_enterBtn.GetComponent<Button>().interactable = false;
+            enterText.DOFade(0.2f, 0.1f);
+        }
     }
 
     public void OnStartGame() {
@@ -76,10 +91,8 @@ public class StartGameManager : MonoBehaviour
     }
 
     public void RunScene() {
-        switch (m_patternType) {
-            case PatternType.Normal:
-                SceneManager.LoadScene("NormalScene"); // 启动普通模式场景
-                break;
+        if (m_patternSceneMap.ContainsKey(m_patternType)) {
+            SceneManager.LoadScene(m_patternSceneMap[m_patternType]); // 启动对应模式场景
         }
     }
 

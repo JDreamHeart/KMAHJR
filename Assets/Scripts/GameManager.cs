@@ -18,6 +18,8 @@ public enum Direction {
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance; // 静态实例
+    
+    public PatternType m_patternType; // 当前所选择的模式类型
 
     bool m_isPlaying; // 是否正在游戏中
 
@@ -68,7 +70,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        // 隐藏排行榜
+        m_result.Find("RankingList").gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -105,12 +108,20 @@ public class GameManager : MonoBehaviour
     
     public void OnStopGame() {
         m_isPlaying = false;
+        // 保存分数
+        GameData.Instance.AddScoreData(m_patternType, m_score);
+        // 显示结果
         Transform resultContent = m_result.Find("ResultContent");
         Transform curScoreVal = resultContent.Find("CurrentScore").Find("ScoreValue");
         curScoreVal.GetComponent<Text>().text = m_score.ToString();
         Transform maxScoreVal = resultContent.Find("RankingList").Find("MaxScoreValue");
-        maxScoreVal.GetComponent<Text>().text = m_score.ToString();
+        ScoreDataItem[] items = GameData.Instance.GetScoreData(m_patternType);
+        maxScoreVal.GetComponent<Text>().text = items[0].score.ToString();
         m_result.gameObject.SetActive(true);
+        // 重置板块生成器
+        foreach (BoardSpawn spawn in m_boardSpawnList) {
+            spawn.Reset();
+        }
         // 播放动画
         resultContent.DOScale(0, 0);
         resultContent.DOScale(1, 0.3f);
@@ -131,9 +142,6 @@ public class GameManager : MonoBehaviour
             if (ss != null) {
                 ss.UpdateCurSkillData();
             }
-        }
-        foreach (BoardSpawn spawn in m_boardSpawnList) {
-            spawn.Reset(); // 重置
         }
         // 重置音量
         m_audioSource.volume = 0.8f;
@@ -224,5 +232,23 @@ public class GameManager : MonoBehaviour
     
     public void AddSkill(SkillReward reward) {
         m_skillsInfo.AddSkill(reward);
+    }
+
+    public void ShowRankingList() {
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
+        // 显示排行榜
+        RankingList rankingList = m_result.Find("RankingList").GetComponent<RankingList>();
+        rankingList.gameObject.SetActive(true);
+        rankingList.UpdateRankingList(m_patternType);
+    }
+    
+    public void HideRankingList() {
+        // 播放音效
+        AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
+        AudioSource.PlayClipAtPoint(clip, Vector3.zero);
+        // 隐藏排行榜
+        m_result.Find("RankingList").gameObject.SetActive(false);
     }
 }

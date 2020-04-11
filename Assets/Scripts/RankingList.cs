@@ -27,15 +27,24 @@ public class RankingList : MonoBehaviour
         
     }
 
+    Transform getRankingItem() {
+        if (m_rankingItems.Count > 0) {
+            Transform trans = m_rankingItems[0];
+            m_rankingItems.RemoveAt(0);
+            trans.gameObject.SetActive(true); // 显示节点
+            return trans;
+        }
+        return Instantiate(m_itemPrefab, m_content.position, Quaternion.identity, m_content) as Transform; // 生成块状实例
+    }
+
     public void UpdateRankingList(PatternType ptype) {
-        Transform itemTrans = m_content.Find("Items");
-        if (itemTrans == null) {
+        if (m_content == null) {
             return;
         }
         ScoreDataItem[] items = GameData.Instance.GetScoreData(ptype);
         int curIdx = 0;
-        for (int i = 0; i < itemTrans.childCount; i++) {
-            Transform child = itemTrans.GetChild(i);
+        for (int i = 0; i < m_content.childCount; i++) {
+            Transform child = m_content.GetChild(i);
             if (i < items.Length) {
                 curIdx++;
                 child.GetChild(0).GetComponent<Text>().text = curIdx.ToString();
@@ -46,25 +55,17 @@ public class RankingList : MonoBehaviour
                 m_rankingItems.Add(child);
             }
         }
-        Vector3 pos = Camera.main.WorldToScreenPoint(itemTrans.position);
         while (curIdx < items.Length) {
-            Transform child;
-            if (m_rankingItems.Count > 0) {
-                child = m_rankingItems[0];
-                m_rankingItems.RemoveAt(0);
-                child.gameObject.SetActive(true); // 显示节点
-            } else {
-                child = Instantiate(m_itemPrefab, itemTrans.position, Quaternion.identity, itemTrans) as Transform; // 生成块状实例
-            }
+            Transform child = getRankingItem();
             child.GetChild(0).GetComponent<Text>().text = (curIdx+1).ToString();
             child.GetChild(1).GetComponent<Text>().text = items[curIdx].score.ToString();
             child.GetChild(2).GetComponent<Text>().text = items[curIdx].time.ToString();
-            child.position = Camera.main.ScreenToWorldPoint(new Vector3(pos.x, pos.y - curIdx * m_itemSpacing, pos.z));
+            child.localPosition = new Vector3(0, - curIdx * m_itemSpacing, 0);
             curIdx++;
         }
         // 更新内容尺寸
         RectTransform rt = m_content.GetComponent<RectTransform>();
-        float sizeY = itemTrans.childCount * m_itemSpacing;
+        float sizeY = m_content.childCount * m_itemSpacing;
         rt.sizeDelta = new Vector2(rt.rect.width, sizeY);
     }
 }

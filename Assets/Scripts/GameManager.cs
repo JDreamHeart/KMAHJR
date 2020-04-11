@@ -117,14 +117,16 @@ public class GameManager : MonoBehaviour
         Transform maxScoreVal = resultContent.Find("RankingList").Find("MaxScoreValue");
         ScoreDataItem[] items = GameData.Instance.GetScoreData(m_patternType);
         maxScoreVal.GetComponent<Text>().text = items[0].score.ToString();
-        m_result.gameObject.SetActive(true);
+        // 播放动画
+        Tweener tweener = resultContent.DOScale(0, 0);
+        tweener.OnComplete(() => {
+            m_result.gameObject.SetActive(true);
+        });
+        resultContent.DOScale(1, 0.3f);
         // 重置板块生成器
         foreach (BoardSpawn spawn in m_boardSpawnList) {
             spawn.Reset();
         }
-        // 播放动画
-        resultContent.DOScale(0.2f, 0);
-        resultContent.DOScale(1, 0.3f);
     }
 
     public void OnRestartGame() {

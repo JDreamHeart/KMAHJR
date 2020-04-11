@@ -123,7 +123,7 @@ public class GameManager : MonoBehaviour
             spawn.Reset();
         }
         // 播放动画
-        resultContent.DOScale(0, 0);
+        resultContent.DOScale(0.2f, 0);
         resultContent.DOScale(1, 0.3f);
     }
 
@@ -239,9 +239,13 @@ public class GameManager : MonoBehaviour
         AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         // 显示排行榜
-        RankingList rankingList = m_result.Find("RankingList").GetComponent<RankingList>();
+        Transform rlTrans = m_result.Find("RankingList");
+        RankingList rankingList = rlTrans.GetComponent<RankingList>();
         rankingList.gameObject.SetActive(true);
         rankingList.UpdateRankingList(m_patternType);
+        // 播放动画
+        rlTrans.DOScale(0.2f, 0);
+        rlTrans.DOScale(1, 0.3f);
     }
     
     public void HideRankingList() {
@@ -249,6 +253,10 @@ public class GameManager : MonoBehaviour
         AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         // 隐藏排行榜
-        m_result.Find("RankingList").gameObject.SetActive(false);
+        Transform rlTrans = m_result.Find("RankingList");
+        Tweener tweener = rlTrans.DOScale(0, 0.3f);
+        tweener.OnComplete(() => {
+            rlTrans.gameObject.SetActive(false);
+        });
     }
 }

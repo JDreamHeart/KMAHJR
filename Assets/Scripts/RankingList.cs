@@ -13,6 +13,8 @@ public class RankingList : MonoBehaviour
 
     public float m_itemSpacing = 60;
 
+    List<Transform> m_rankingItems = new List<Transform>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,14 +41,21 @@ public class RankingList : MonoBehaviour
                 child.GetChild(0).GetComponent<Text>().text = curIdx.ToString();
                 child.GetChild(1).GetComponent<Text>().text = items[i].score.ToString();
                 child.GetChild(2).GetComponent<Text>().text = items[i].time.ToString();
-                child.gameObject.SetActive(true); // 显示
             } else {
-                child.gameObject.SetActive(false); // 隐藏不需要的孩子节点
+                child.gameObject.SetActive(false); // 隐藏不需要的子节点
+                m_rankingItems.Add(child);
             }
         }
         Vector3 pos = Camera.main.WorldToScreenPoint(itemTrans.position);
         while (curIdx < items.Length) {
-            Transform child = Instantiate(m_itemPrefab, itemTrans.position, Quaternion.identity, itemTrans) as Transform; // 生成块状实例
+            Transform child;
+            if (m_rankingItems.Count > 0) {
+                child = m_rankingItems[0];
+                m_rankingItems.RemoveAt(0);
+                child.gameObject.SetActive(true); // 显示节点
+            } else {
+                child = Instantiate(m_itemPrefab, itemTrans.position, Quaternion.identity, itemTrans) as Transform; // 生成块状实例
+            }
             child.GetChild(0).GetComponent<Text>().text = (curIdx+1).ToString();
             child.GetChild(1).GetComponent<Text>().text = items[curIdx].score.ToString();
             child.GetChild(2).GetComponent<Text>().text = items[curIdx].time.ToString();

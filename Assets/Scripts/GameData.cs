@@ -44,6 +44,18 @@ public class GameData : MonoBehaviour
 
     }
 
+    public void SetPatternType(PatternType ptype) {
+        PlayerPrefs.SetString("PatternType", ptype.ToString());
+    }
+
+    public PatternType GetPatternType() {
+        if (PlayerPrefs.HasKey("PatternType")) {
+            String ptype = PlayerPrefs.GetString("PatternType");
+            return (PatternType)Enum.Parse(typeof(PatternType), ptype);
+        }
+        return PatternType.Normal;
+    }
+
     public ScoreDataItem NewScoreDataItem(int score) {
         ScoreDataItem item = new ScoreDataItem();
         item.time = System.DateTime.Now;

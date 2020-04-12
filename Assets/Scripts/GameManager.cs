@@ -121,8 +121,9 @@ public class GameManager : MonoBehaviour
         Tweener tweener = resultContent.DOScale(0, 0);
         tweener.OnComplete(() => {
             m_result.gameObject.SetActive(true);
+            // 显示
+            resultContent.DOScale(1, 0.3f);
         });
-        resultContent.DOScale(1, 0.3f);
         // 重置板块生成器
         foreach (BoardSpawn spawn in m_boardSpawnList) {
             spawn.Reset();
@@ -240,14 +241,17 @@ public class GameManager : MonoBehaviour
         // 播放音效
         AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
-        // 显示排行榜
-        Transform rlTrans = m_result.Find("RankingList");
-        RankingList rankingList = rlTrans.GetComponent<RankingList>();
-        rankingList.gameObject.SetActive(true);
-        rankingList.UpdateRankingList(m_patternType);
         // 播放动画
-        rlTrans.DOScale(0.2f, 0);
-        rlTrans.DOScale(1, 0.3f);
+        Transform rlTrans = m_result.Find("RankingList");
+        Tweener tweener = rlTrans.DOScale(0.2f, 0);
+        tweener.OnComplete(() => {
+            // 显示排行榜
+            RankingList rankingList = rlTrans.GetComponent<RankingList>();
+            rankingList.gameObject.SetActive(true);
+            rankingList.UpdateRankingList(m_patternType);
+            // 显示
+            rlTrans.DOScale(1, 0.3f);
+        });
     }
     
     public void HideRankingList() {

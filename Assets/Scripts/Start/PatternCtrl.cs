@@ -26,7 +26,7 @@ public class PatternCtrl : MonoBehaviour
     void Start()
     {
         Vector3 pos = Camera.main.WorldToScreenPoint(this.transform.position);
-        float lastPosX = Screen.width/2;
+        float lastPosX = (float)Screen.width/2;
         for (int i = 0; i < this.transform.childCount; i++) {
             Transform child = this.transform.GetChild(i);
             child.position = Camera.main.ScreenToWorldPoint(new Vector3(lastPosX, pos.y, pos.z));
@@ -37,7 +37,11 @@ public class PatternCtrl : MonoBehaviour
         rt.sizeDelta = new Vector2(sizeX, rt.rect.height);
         // 更新目标项下标
         if (Application.isPlaying) {
-            this.updateTargetItemIdx(0);
+            PatternType ptype = GameData.Instance.GetPatternType();
+            int index = (int)ptype;
+            this.updateTargetItemIdx(index);
+            float targetPos = (float)index / (float)(this.transform.childCount - 1);
+            m_scrollView.horizontalNormalizedPosition = targetPos;
         }
     }
 
@@ -56,10 +60,10 @@ public class PatternCtrl : MonoBehaviour
             if (m_staticDuration >= 0.01f && this.transform.childCount > 1) {
                 float fidx = m_scrollView.horizontalNormalizedPosition * (this.transform.childCount - 1);
                 int previdx = Mathf.FloorToInt(fidx), nextidx = Mathf.CeilToInt(fidx);
-                float targetPos = previdx / (this.transform.childCount - 1);
+                float targetPos = (float)previdx / (float)(this.transform.childCount - 1);
                 int targetItemIdx = previdx;
                 if (fidx - previdx > nextidx - fidx) {
-                    targetPos = nextidx / (this.transform.childCount - 1);
+                    targetPos = (float)nextidx / (float)(this.transform.childCount - 1);
                     targetItemIdx = nextidx;
                 }
                 this.updateTargetItemIdx(targetItemIdx);

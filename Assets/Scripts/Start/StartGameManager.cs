@@ -43,6 +43,7 @@ public class StartGameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        m_patternType = GameData.Instance.GetPatternType();
         m_patternDetail.gameObject.SetActive(false);
         hideAllPatternDetail();
     }
@@ -71,6 +72,7 @@ public class StartGameManager : MonoBehaviour
         Text nameText = m_patternName.Find("NameText").GetComponent<Text>();
         nameText.text = string.Format("- <color=yellow>{0}模式</color> -", name);
         m_patternType = type;
+        GameData.Instance.SetPatternType(type); // 保存数据
         // 校验模式场景
         Text enterText = m_enterBtn.Find("Text").GetComponent<Text>();
         if (m_patternSceneMap.ContainsKey(m_patternType)) {
@@ -101,13 +103,16 @@ public class StartGameManager : MonoBehaviour
         AudioClip clip = Resources.Load<AudioClip>("Sounds/Button");
         AudioSource.PlayClipAtPoint(clip, Vector3.zero);
         // 显示模式详情
-        m_patternDetail.gameObject.SetActive(true);
-        hideAllPatternDetail();
-        if (m_patternDetailMap.ContainsKey(m_patternType)) {
-            m_patternDetailMap[m_patternType].SetActive(true);
-        }
-        m_patternDetailDetail.DOScale(0, 0);
-        m_patternDetailDetail.DOScale(1, 0.3f);
+        Tweener tweener = m_patternDetailDetail.DOScale(0, 0);
+        tweener.OnComplete(() => {
+            m_patternDetail.gameObject.SetActive(true);
+            hideAllPatternDetail();
+            if (m_patternDetailMap.ContainsKey(m_patternType)) {
+                m_patternDetailMap[m_patternType].SetActive(true);
+            }
+            // 显示
+            m_patternDetailDetail.DOScale(1, 0.3f);
+        });
     }
     
     public void HidePatternDetail() {

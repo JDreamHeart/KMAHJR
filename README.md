@@ -69,9 +69,7 @@
 ![普通模式场景](./MD/NormalScene.jpg)
 
 #### 游戏运行视频
-<video controls>
-    <source src="https://jdreamheart.com/tech/videos/KMAHJR-GameStage.mp4" type="video/mp4">
-</video>
+游戏演示视频：[https://jdreamheart.com/tech/videos/KMAHJR-GameStage.mp4](https://jdreamheart.com/tech/videos/KMAHJR-GameStage.mp4)
 
 ## 后续扩展
 后续主要针对游戏界面进行优化，以及开发出更多不一样的模式（在**游戏流程**中的开始游戏场景可进行模式切换）来丰富游戏玩法。  

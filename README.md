@@ -64,8 +64,8 @@
 ![普通模式场景](./MD/NormalScene.jpg)
 
 #### 游戏运行视频
-<video id="video" controls="" preload="none">
-    <source id="mp4" src="./MD/GameStage.mp4" type="video/mp4">
+<video controls>
+    <source src="https://jdreamheart.com/tech/videos/KMAHJR-GameStage.mp4" type="video/mp4">
 </video>
 
 ## 后续扩展

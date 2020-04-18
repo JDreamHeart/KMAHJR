@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class ActiveInEditor : MonoBehaviour
 {
-    public bool m_isActive;
+    public bool m_isActive = true;
 
     // Start is called before the first frame update
     void Start()

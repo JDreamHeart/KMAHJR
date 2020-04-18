@@ -35,7 +35,6 @@ public class StartGameManager : MonoBehaviour
     Dictionary<PatternType, string> m_patternSceneMap = new Dictionary<PatternType, string>();
 
     void Awake() {
-        GameData.Instance.Load();
         Instance = this;
         m_enterBtn = this.transform.Find("Enter");
         m_escapeTips = this.transform.Find("EscapeTips");

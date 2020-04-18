@@ -17,12 +17,17 @@ public class StartGameManager : MonoBehaviour
 {
     public static StartGameManager Instance;
 
+    public float m_escapeDuration = 2; // 退出提示时长
+    float m_escapeActualDuration = 0; // 退出提示显示当前时长
+
     Transform m_enterBtn; // 进入游戏按钮
 
     Transform m_patternName; // 模式名称
     
     Transform m_patternDetail; // 模式详情
     Transform m_patternDetailDetail; // 模式详情的细节
+
+    Transform m_escapeTips; // 退出游戏提示
 
     PatternType m_patternType; // 当前所选择的模式类型
 
@@ -33,6 +38,7 @@ public class StartGameManager : MonoBehaviour
         GameData.Instance.Load();
         Instance = this;
         m_enterBtn = this.transform.Find("Enter");
+        m_escapeTips = this.transform.Find("EscapeTips");
         m_patternName = this.transform.Find("Pattern").Find("PatternName");
         m_patternDetail = this.transform.Find("PatternDetail");
         m_patternDetailDetail = m_patternDetail.Find("Detail");
@@ -49,12 +55,30 @@ public class StartGameManager : MonoBehaviour
         m_patternType = GameData.Instance.GetPatternType();
         m_patternDetail.gameObject.SetActive(false);
         hideAllPatternDetail();
+        m_escapeTips.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (m_escapeActualDuration > 0) {
+            m_escapeActualDuration -= Time.deltaTime;
+        }
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (m_escapeActualDuration > 0) {
+                Application.Quit(); // 退出游戏
+            } else {
+                m_escapeActualDuration = m_escapeDuration;
+                m_escapeTips.gameObject.SetActive(true);
+                Image escapeTips = m_escapeTips.GetComponent<Image>();
+                escapeTips.DOFade(1, 0).OnComplete(() => {
+                    escapeTips.DOFade(0.2f, m_escapeDuration).OnComplete(() => {
+                        escapeTips.DOFade(1, 0);
+                        m_escapeTips.gameObject.SetActive(false);
+                    });
+                });
+            }
+        }
     }
 
     // 隐藏所有模式详情

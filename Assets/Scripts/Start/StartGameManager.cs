@@ -7,7 +7,8 @@ using DG.Tweening;
 
 public enum PatternType {
     Normal = 0,
-    Guardian = 1, // 守护模式
+    DoubleJump = 1, // 二段跳模式
+    Guardian = 2, // 守护模式
 }
 
 [AddComponentMenu("GameScripts/StartGameManager")]
@@ -37,6 +38,8 @@ public class StartGameManager : MonoBehaviour
         m_patternDetailDetail = m_patternDetail.Find("Detail");
         m_patternDetailMap.Add(PatternType.Normal, m_patternDetailDetail.Find("Normal").gameObject); // 模式详情
         m_patternSceneMap.Add(PatternType.Normal, "NormalScene"); // 对应模式的场景
+        m_patternDetailMap.Add(PatternType.DoubleJump, m_patternDetailDetail.Find("DoubleJump").gameObject); // 模式详情
+        m_patternSceneMap.Add(PatternType.DoubleJump, "DoubleJumpScene"); // 对应模式的场景
         m_patternDetailMap.Add(PatternType.Guardian, m_patternDetailDetail.Find("Guardian").gameObject);
     }
 

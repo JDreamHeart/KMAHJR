@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -2}
-  m_SizeDelta: {x: 0, y: -4}
+  m_AnchoredPosition: {x: 0, y: -7}
+  m_SizeDelta: {x: 0, y: -14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5618434929760220696
 CanvasRenderer:
@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.92815673, b: 0.5330188, a: 0.9019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.9019608}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -79,7 +79,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: DJ
+  m_Text: 10
 --- !u!114 &2316455467433919507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0.96882963, b: 1, a: 0.5}
+  m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
 --- !u!1 &8762198023837059795
@@ -107,10 +107,10 @@ GameObject:
   - component: {fileID: 8762198023837059798}
   - component: {fileID: 8762198023837059799}
   - component: {fileID: 8762198023837059797}
+  - component: {fileID: 8762198023837059801}
   - component: {fileID: 2812124160644683664}
-  - component: {fileID: 5364048894747411430}
   m_Layer: 5
-  m_Name: DoubleJump
+  m_Name: Star7
   m_TagString: Reward
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7b955a0fff6c6a4478c19a476b8c6f0e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2c1a0beefef6915479e5d40066acc7f2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -190,6 +190,24 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -4}
   serializedVersion: 2
   m_Radius: 38
+--- !u!114 &8762198023837059801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8762198023837059795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c3be8c766570f448a901bb0b8c7faae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_score: 7
+  m_isStatic: 1
+  m_survivalTime: 10
+  m_maxTwinkleFrequency: 2
+  m_remainingTimeToTwinkle: 5
+  m_isAllowSyncScore: 1
 --- !u!225 &2812124160644683664
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -202,22 +220,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &5364048894747411430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8762198023837059795}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2aaf5f0f171d5dd4791865918b43c617, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_score: 0
-  m_survivalTime: 8
-  m_maxTwinkleFrequency: 2
-  m_remainingTimeToTwinkle: 4
 --- !u!1 &8762198024665328136
 GameObject:
   m_ObjectHideFlags: 0
@@ -445,7 +447,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.36862746, g: 0.58431375, b: 0.854902, a: 1}
+      maxColor: {r: 1, g: 0.9607843, b: 0, a: 0.78431374}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

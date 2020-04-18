@@ -8,6 +8,7 @@ public enum SkillType {
     HeavenGift = 2, // 天降礼物
     GroundGift = 3, // 地升礼物
     DoubleScore = 4, // 双倍分数
+    Trajectory  = 5, // 运动轨迹
 }
 
 public enum SkillStyle {
@@ -28,6 +29,9 @@ public struct SkillData {
 public class SkillsInfo : MonoBehaviour
 {
     public SkillReward m_doubleJumpPrefab;
+    public SkillReward m_acceleratePrefab;
+    public SkillReward m_doubleScorePrefab;
+    public SkillReward m_trajectoryPrefab;
 
     protected Dictionary<SkillType, int> TimesConfig = new Dictionary<SkillType, int>();
     protected Dictionary<SkillType, float> DurationConfig = new Dictionary<SkillType, float>();
@@ -41,9 +45,11 @@ public class SkillsInfo : MonoBehaviour
     protected virtual void initConfig() {
         // 初始化次数限制配置
         TimesConfig.Add(SkillType.DoubleJump, 1);
+        TimesConfig.Add(SkillType.Accelerate, 2);
+        TimesConfig.Add(SkillType.Trajectory, 1);
     }
 
-    protected void updateSDConfig(SkillData sd) {
+    protected void updateSDConfig(ref SkillData sd) {
         if (TimesConfig.ContainsKey(sd.stype)) {
             sd.sstyle = SkillStyle.Times;
             sd.stimes = TimesConfig[sd.stype];
@@ -76,8 +82,22 @@ public class SkillsInfo : MonoBehaviour
             SkillData sd = new SkillData();
             sd.stype = SkillType.DoubleJump;
             sd.sprefab = m_doubleJumpPrefab;
-            updateSDConfig(sd);
+            updateSDConfig(ref sd);
             m_skillMap.Add(SkillType.DoubleJump, sd);
+        }
+        if (m_acceleratePrefab != null) {
+            SkillData sd = new SkillData();
+            sd.stype = SkillType.Accelerate;
+            sd.sprefab = m_acceleratePrefab;
+            updateSDConfig(ref sd);
+            m_skillMap.Add(SkillType.Accelerate, sd);
+        }
+        if (m_trajectoryPrefab != null) {
+            SkillData sd = new SkillData();
+            sd.stype = SkillType.Trajectory;
+            sd.sprefab = m_trajectoryPrefab;
+            updateSDConfig(ref sd);
+            m_skillMap.Add(SkillType.Trajectory, sd);
         }
     }
 
@@ -90,7 +110,11 @@ public class SkillsInfo : MonoBehaviour
     }
     
     public void AddSkill(SkillReward reward) {
-        SkillData sd = reward.skillData.Value;
+        SkillType st = reward.GetSkillType();
+        if (!m_skillMap.ContainsKey(st)) {
+            return;
+        }
+        SkillData sd = m_skillMap[st];
         RectTransform rt = Instantiate(sd.sprefab.GetComponent<RectTransform>(), this.transform) as RectTransform;
         rt.sizeDelta = new Vector2(64, 64);
         rt.GetComponent<SkillReward>().enabled = false;
@@ -101,6 +125,7 @@ public class SkillsInfo : MonoBehaviour
         // 检测更新技能表
         if (sd.sstyle == SkillStyle.Times) {
             sd.stimes--;
+            m_skillMap[st] = sd;
             if (sd.stimes <= 0) {
                 m_skillMap.Remove(sd.stype);
             }
@@ -111,11 +136,12 @@ public class SkillsInfo : MonoBehaviour
 
     public SkillData? GetSkillData() {
         if (m_skillMap.Values.Count > 0) {
-            int i = 0, idx = Random.Range(0, m_skillMap.Values.Count - 1);
+            int i = 0, idx = Random.Range(0, m_skillMap.Values.Count);
             foreach (SkillData sd in m_skillMap.Values) {
                 if (i == idx) {
                     return sd;
                 }
+                i ++;
             }
         }
         return null;
@@ -135,6 +161,12 @@ public class SkillsInfo : MonoBehaviour
         switch (sd.stype) {
         case SkillType.DoubleJump:
             m_sprite.UpdateJumpCountLimit(2);
+            break;
+        case SkillType.Accelerate:
+            m_sprite.Accelerate(5);
+            break;
+        case SkillType.Trajectory:
+            m_sprite.ShowTrajectory();
             break;
         }
     }

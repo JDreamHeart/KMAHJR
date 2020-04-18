@@ -35,8 +35,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -7}
-  m_SizeDelta: {x: 0, y: -14}
+  m_AnchoredPosition: {x: 0, y: -5}
+  m_SizeDelta: {x: 0, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5618434929760220696
 CanvasRenderer:
@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 8762198023837059801}
   - component: {fileID: 2812124160644683664}
   m_Layer: 5
-  m_Name: Reward
+  m_Name: Star4
   m_TagString: Reward
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: de384db4e845cf3469a227ae62676fda, type: 3}
+  m_Sprite: {fileID: 21300000, guid: dc94a70681cb8ba49a3e87e9f7d5bac0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -202,10 +202,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c3be8c766570f448a901bb0b8c7faae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_score: 3
+  m_score: 4
+  m_isStatic: 1
   m_survivalTime: 10
   m_maxTwinkleFrequency: 2
   m_remainingTimeToTwinkle: 5
+  m_isAllowSyncScore: 1
 --- !u!225 &2812124160644683664
 CanvasGroup:
   m_ObjectHideFlags: 0

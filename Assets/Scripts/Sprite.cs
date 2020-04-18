@@ -9,6 +9,7 @@ using DG.Tweening;
 public class Sprite : MonoBehaviour
 {
     public float m_speed = 10; // 速度值
+    float m_actualSpeed = 10; // 实际速度
 
     public float m_offsetY = 100; // 纵轴偏移值
 
@@ -22,9 +23,17 @@ public class Sprite : MonoBehaviour
     int m_jumpCntActualLimit = 2; // 跳跃次数实际限制
     public int m_jumpCountLimit = 2; // 跳跃次数限制
 
+    public float m_minGravity = 1; // 最小重力
+
     ParticleSystem m_fireParticle;
     ParticleSystem m_sparkParticle;
     public ParticleSystem m_sprayParticle;
+
+    LineRenderer m_lineRender; // 线条渲染器
+
+    public bool m_isShowTrajectory = false; // 是否显示运动轨迹
+    bool m_isActualShowTrajectory = false; // 实际是否显示运动轨迹
+    public int m_maxLinePointCount = 100; // 线条点个数
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +49,8 @@ public class Sprite : MonoBehaviour
                 m_sparkParticle = trans.GetComponent<ParticleSystem>();
             }
         }
+        // 初始化线条渲染器
+        initLineRenderer();
         // 初始化玩家
         OnRestartGame();
     }
@@ -51,6 +62,11 @@ public class Sprite : MonoBehaviour
             onDead();
             return;
         }
+        // 显示运动轨迹
+        if (m_isActualShowTrajectory) {
+            showTrajectory();
+        }
+        // 检测状态
         if (m_direction == Direction.Unknown || !m_isJumping) {
             return;
         }
@@ -83,15 +99,16 @@ public class Sprite : MonoBehaviour
         }
         // 重置状态
         m_isJumping = true;
-        // 新增跳跃次数
-        m_jumpCount += 1;
-        // 更新速度
-        float xSpeed = m_direction == Direction.Right ? m_speed : -m_speed;
-        m_rigidbody2D.velocity = new Vector2(xSpeed * m_jumpCount / jumpCntLimit, 0.2f * m_speed * m_jumpCount / jumpCntLimit); // 设置速度
+        Vector2 velocity;
+        m_rigidbody2D.gravityScale = getNextState(out velocity);
+        m_rigidbody2D.velocity = velocity;
         // 将body type设为Dynamic
         if (m_rigidbody2D.bodyType != RigidbodyType2D.Dynamic) {
             m_rigidbody2D.bodyType = RigidbodyType2D.Dynamic;
         }
+        // 新增跳跃次数
+        m_jumpCount += 1;
+        // 更新火焰粒子
         updateFireFlip(0.5f);
         // 播放音效
         AudioClip clip = Resources.Load<AudioClip>("Sounds/Jump");
@@ -104,6 +121,19 @@ public class Sprite : MonoBehaviour
         m_jumpCount = 0;
         // 将精灵刚体类型设为Kinematic
         m_rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+    }
+
+    // 获取下一个状态【重力、速度】
+    float getNextState(out Vector2 velocity) {
+        velocity = m_rigidbody2D.velocity; // 初始化速度
+        int jumpCntLimit = Mathf.Max(m_jumpCntActualLimit, m_jumpCountLimit);
+        int diffCnt = jumpCntLimit - m_jumpCount - 1;
+        if (diffCnt < 0) {
+            return m_rigidbody2D.gravityScale;
+        }
+        float xSpeed = m_direction == Direction.Left ? -m_actualSpeed : m_actualSpeed;
+        velocity = new Vector2(xSpeed * Mathf.Pow(0.2f, diffCnt), m_actualSpeed * diffCnt / jumpCntLimit); // 速度
+        return m_minGravity * diffCnt; // 重力
     }
 
     void OnCollisionEnter2D(Collision2D collision) {
@@ -139,9 +169,9 @@ public class Sprite : MonoBehaviour
         if (collider.tag == "Reward") {
             Reward reward = collider.GetComponent<Reward>();
             if (reward.enabled) {
-                if (collider.name.Contains("DoubleJump")) {
+                SkillReward sr = reward.GetComponent<SkillReward>();
+                if (sr != null) {
                     reward.PlayDeadAnim(GameManager.Instance.GetSkillTrans(), () => {
-                        SkillReward sr = reward.GetComponent<SkillReward>();
                         GameManager.Instance.AddSkill(sr);
                         sr.OnAddSkill();
                     });
@@ -160,7 +190,7 @@ public class Sprite : MonoBehaviour
     // 检测是否超出边界
     bool isOutboundary() {
         Vector2 pos = Camera.main.WorldToScreenPoint(this.transform.position);
-        if (pos.x <= 0 || pos.x >= Screen.width || pos.y <= -m_offsetY || pos.y >= Screen.height + m_offsetY) {
+        if (pos.x <= 0 || pos.x >= Screen.width || pos.y <= -m_offsetY || (!m_isJumping && pos.y >= Screen.height + m_offsetY)) {
             return true;
         }
         return false;
@@ -201,14 +231,85 @@ public class Sprite : MonoBehaviour
         this.gameObject.SetActive(true);
         // 将精灵刚体类型设为Kinematic
         m_rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+        m_rigidbody2D.velocity = new Vector2(0, 0);
+        m_rigidbody2D.gravityScale = 0;
+        // 重置当前跳跃次数
+        m_jumpCount = 0;
         // 重置实际跳跃次数限制
         m_jumpCntActualLimit = m_jumpCountLimit;
+        // 重置实际速度
+        m_actualSpeed = m_speed;
+        // 重置实际是否显示运动轨迹
+        m_isActualShowTrajectory = m_isShowTrajectory;
     }
 
     // 更新跳跃次数限制
     public void UpdateJumpCountLimit(int limit) {
         if (limit > 0) {
             m_jumpCntActualLimit = limit;
+        }
+    }
+
+    // 加速
+    public void Accelerate(float speed) {
+        m_actualSpeed += speed;
+    }
+
+    // 显示/隐藏运动轨迹
+    public void ShowTrajectory(bool isShow = true) {
+        m_isActualShowTrajectory = isShow;
+    }
+
+    // 初始化线条渲染器
+    LineRenderer initLineRenderer() {
+        m_lineRender = this.GetComponent<LineRenderer>();
+        if (m_lineRender == null) {
+            m_lineRender = this.gameObject.AddComponent<LineRenderer>();
+        }
+        // 线段宽度
+        m_lineRender.startWidth = 0.05f;
+        m_lineRender.endWidth = 0.1f;
+        return m_lineRender;
+    }
+
+    // 显示运动轨迹
+    void showTrajectory() {
+        Vector2 velocity;
+        float gravityScale = getNextState(out velocity);
+        if (velocity.x != 0) {
+            Vector2 lb = Camera.main.ScreenToWorldPoint(new Vector2(0, 0));
+            Vector2 rt = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height));
+            float t = (rt.x - lb.x) / Mathf.Abs(velocity.x) / m_maxLinePointCount;
+            float gravity = (Physics.gravity * gravityScale).y;
+            Vector3 pos = this.transform.position;
+            List<Vector3> posList = new List<Vector3>();
+            Vector3 prevPos = this.transform.position, nextPos = Vector3.zero;
+            posList.Add(prevPos);
+            bool isBreak = false;
+            for (int i = 1; i <= m_maxLinePointCount; i++) {
+                float x = pos.x + velocity.x * t * i;
+                float y = pos.y + velocity.y * t * i + 0.5f * gravity * Mathf.Pow(t * i, 2);
+                if (x <= lb.x || x >= rt.x || y <= lb.y) {
+                    isBreak = true;
+                }
+                nextPos = new Vector3(x, y, pos.z);
+                if (!isBreak) {
+                    // 通过射线检测碰撞
+                    RaycastHit2D hitinfo = Physics2D.Raycast(prevPos, nextPos - prevPos, Vector2.Distance(nextPos, prevPos), LayerMask.GetMask("Board"));
+                    if (hitinfo.collider != null) {
+                        // nextPos = new Vector3(hitinfo.point.x, hitinfo.point.y, pos.z);
+                        // isBreak = true;
+                        break;
+                    }
+                }
+                posList.Add(nextPos);
+                if (isBreak) {
+                    break;
+                }
+            }
+            // 更新LineRenderer
+            m_lineRender.positionCount = posList.Count;
+            m_lineRender.SetPositions(posList.ToArray());
         }
     }
 }

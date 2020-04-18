@@ -105,7 +105,7 @@ public class GameData : MonoBehaviour
             return;
         }
         List<ScoreDataItem> items = m_scoreMap[patternType];
-        string key = string.Format("Score|{0}|", PatternType.Normal);
+        string key = string.Format("Score|{0}|", patternType);
         PlayerPrefs.SetInt(key+"Count", items.Count);
         for (int i = 0; i < items.Count; i++) {
             PlayerPrefs.SetString(key+i.ToString(), items[i].ToString());
@@ -115,7 +115,7 @@ public class GameData : MonoBehaviour
 
     List<ScoreDataItem> convertScoreData(PatternType patternType) {
         List<ScoreDataItem> result = new List<ScoreDataItem>();
-        string key = string.Format("Score|{0}|", PatternType.Normal);
+        string key = string.Format("Score|{0}|", patternType);
         if (PlayerPrefs.HasKey(key+"Count")) {
             for (int i = 0; i < PlayerPrefs.GetInt(key+"Count"); i++) {
                 if (PlayerPrefs.HasKey(key+i.ToString())) {

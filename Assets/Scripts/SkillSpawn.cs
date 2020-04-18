@@ -27,15 +27,14 @@ public class SkillSpawn : RewardSpawn
         if (m_curSkillData == null) {
             return null;
         }
-        Debug.Log(string.Format("getReward:{0}", m_rcRewards.Count));
         Vector3 targetPos = getRewardPos();
-        if (m_rcRewards.Count > 0) {
-            Reward reward = m_rcRewards[0];
-            m_rcRewards.RemoveAt(0);
-            reward.gameObject.SetActive(true);
-            reward.GetComponent<Transform>().position = targetPos; // 更新位置
-            return reward;
-        }
+        // if (m_rcRewards.Count > 0) {
+        //     Reward reward = m_rcRewards[0];
+        //     m_rcRewards.RemoveAt(0);
+        //     reward.gameObject.SetActive(true);
+        //     reward.GetComponent<Transform>().position = targetPos; // 更新位置
+        //     return reward;
+        // }
         Transform rewardPrefab = m_curSkillData.Value.sprefab.GetComponent<Transform>();
         Transform trans = Instantiate(rewardPrefab, targetPos, Quaternion.identity, this.transform) as Transform; // 生成块状实例
         Tweener tweener =  trans.DOShakeRotation(2, 10); // 震动动画
@@ -43,9 +42,14 @@ public class SkillSpawn : RewardSpawn
         return trans.GetComponent<Reward>();
     }
 
+    protected override void OnRecoverReward(Reward reward) {
+        m_rcRewards.Remove(reward);
+        Destroy(reward.gameObject);
+    }
+
     protected override void OnGenerateReward(Reward reward) {
         SkillReward sr = reward.GetComponent<SkillReward>();
-        sr.skillData = m_curSkillData.Value;
+        sr.SetSkillType(m_curSkillData.Value.stype);
     }
 
     public void UpdateCurSkillData() {

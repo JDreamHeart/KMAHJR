@@ -8,7 +8,15 @@ using DG.Tweening;
 
 public class SkillReward : Reward
 {
-    public SkillData? skillData {get; set;}
+    SkillType m_skillType;
+
+    public void SetSkillType(SkillType stype) {
+        m_skillType = stype;
+    }
+    
+    public SkillType GetSkillType() {
+        return m_skillType;
+    }
     
     public override void PlayDeadAnim(Vector3 targetPos, TweenCallback callback) {
         // 更新位置

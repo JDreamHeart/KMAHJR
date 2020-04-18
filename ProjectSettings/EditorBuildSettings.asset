@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/NormalScene.unity
     guid: 76eadfd999e325440b2a456057572d76
+  - enabled: 1
+    path: Assets/Scenes/DoubleJumpScene.unity
+    guid: 5016e20817cf45c46b8727c4fddd3104
   m_configObjects: {}

@@ -2356,7 +2356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 429cce04d6d09064b9f136871c7f0e76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_patternType: 0
+  m_patternType: 1
   m_showResultDelay: 1
 --- !u!82 &835040417
 AudioSource:
@@ -8283,7 +8283,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_speed: 12
   m_offsetY: 100
-  m_jumpCountLimit: 1
+  m_jumpCountLimit: 2
   m_minGravity: 2
   m_sprayParticle: {fileID: 1318311982}
   m_isShowTrajectory: 0

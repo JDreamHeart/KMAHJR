@@ -86,7 +86,7 @@ public class RewardSpawn : MonoBehaviour
             reward.GetComponent<Transform>().position = targetPos; // 更新位置
             return reward;
         }
-        Transform rewardPrefab = m_rewardPrefabs[Random.Range(0, m_rewardPrefabs.Length-1)];
+        Transform rewardPrefab = m_rewardPrefabs[Random.Range(0, m_rewardPrefabs.Length)];
         Transform trans = Instantiate(rewardPrefab, targetPos, Quaternion.identity, this.transform) as Transform; // 生成块状实例
         Tweener tweener =  trans.DOShakeRotation(2, 10); // 震动动画
         tweener.SetLoops(-1);

@@ -24,6 +24,8 @@ public class GameData : MonoBehaviour
 {
     public static GameData Instance;
 
+    public readonly string version = "0.11";
+
     Dictionary<PatternType, List<ScoreDataItem>> m_scoreMap = new Dictionary<PatternType, List<ScoreDataItem>>();
     
     int m_scoreItemLimit = 50;
@@ -42,6 +44,30 @@ public class GameData : MonoBehaviour
 
     void init() {
 
+    }
+
+    // 校验版本
+    public bool VerifyVersion(string targetVer) {
+        try {
+            string[] srcList = version.Split('.');
+            string[] tgtList = targetVer.Split('.');
+            if (tgtList.Length < srcList.Length) {
+                return false;
+            }
+            for (int i = 0; i < srcList.Length; i++) {
+                int idx = tgtList.Length - (srcList.Length - i);
+                int src = int.Parse(srcList[i]);
+                int tgt = int.Parse(tgtList[idx]);
+                if (tgt > src) {
+                    return true;
+                } else if (tgt < src) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            Debug.LogWarning(string.Format("Error to verify version -> {0}", e));
+        }
+        return false;
     }
 
     public void SetPatternType(PatternType ptype) {

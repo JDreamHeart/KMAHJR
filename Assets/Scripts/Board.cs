@@ -8,10 +8,16 @@ public class Board : MonoBehaviour
 {
     BoardSpawn m_spawn;
 
+    Rigidbody2D m_rigidbody2D;
+
+    void Awake() {
+        m_rigidbody2D = this.GetComponent<Rigidbody2D>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -57,5 +63,9 @@ public class Board : MonoBehaviour
     
     void OnCollisionEnter2D(Collision2D collision) {
         // Debug.Log("Board OnCollisionEnter2D===================");
+    }
+
+    public void UpdateVelocity(Vector2 velocity) {
+        m_rigidbody2D.velocity = velocity;
     }
 }

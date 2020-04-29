@@ -34,6 +34,7 @@ public class LoadGameManager : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        Debug.Log(Application.persistentDataPath);
         // 精灵主角
         m_sprite = GameObject.FindGameObjectWithTag("Player");
         // 淡出效果
@@ -45,7 +46,7 @@ public class LoadGameManager : MonoBehaviour
         m_updateTips = updateInfo.Find("UpdateTips").GetComponent<Text>();
         m_updateProgress = updateInfo.Find("UpdateProgress").GetComponent<Slider>();
         m_updateConfirm = this.transform.Find("UpdateConfirm");
-        m_updateConfirm.gameObject.SetActive(false);
+        m_updateConfirm.DOScale(0, 0);
         // 校验版本
         StartCoroutine(verifyApkVersion());
     }
@@ -87,8 +88,6 @@ public class LoadGameManager : MonoBehaviour
             if (url != "" && m_updatePlatformMap.ContainsKey(getPlatform())) {
                 new System.Uri(url); // 转换中文
                 m_downloadUrl = url;
-                m_updateConfirm.gameObject.SetActive(true);
-                m_updateConfirm.DOScale(0, 0);
                 m_updateConfirm.DOScale(1, 0.3f);
                 yield break;
             }
@@ -155,12 +154,12 @@ public class LoadGameManager : MonoBehaviour
     }
 
     public void OnCancelUpdate() {
-        m_updateConfirm.gameObject.SetActive(false);
+        m_updateConfirm.DOScale(0, 0);
         StartCoroutine(startScene()); // 开始游戏场景
     }
     
     public void OnOkUpdate() {
-        m_updateConfirm.gameObject.SetActive(false);
+        m_updateConfirm.DOScale(0, 0);
         StartCoroutine(downloadPkg()); // 下载并安装更新包
     }
 }

@@ -66,6 +66,14 @@ public class BoardSpawn : MonoBehaviour
 
     public void UpdateVelocity(float velocity) {
         m_velocity = velocity;
+        // 更新已有板块的速度
+        foreach (Board board in m_activeBoards) {
+            Vector2 v = new Vector2(0, m_velocity);
+            if (!m_isRight) {
+                v = new Vector2(0, -m_velocity);
+            }
+            board.UpdateVelocity(v);
+        }
     }
 
     IEnumerator SpawnBoard() {
@@ -73,12 +81,11 @@ public class BoardSpawn : MonoBehaviour
             Board board = getBoard(); // 获取块状
             m_activeBoards.Insert(0, board);
             board.SetBoardSpawn(this);
-            Rigidbody2D rigidbody2D = board.GetComponent<Rigidbody2D>();
-            if (m_isRight) {
-                rigidbody2D.velocity = new Vector2(0, m_velocity);
-            } else {
-                rigidbody2D.velocity = new Vector2(0, -m_velocity);
+            Vector2 v = new Vector2(0, m_velocity);
+            if (!m_isRight) {
+                v = new Vector2(0, -m_velocity);
             }
+            board.UpdateVelocity(v);
             // 等待一段时间
             yield return new WaitForSeconds(m_duration);
         }

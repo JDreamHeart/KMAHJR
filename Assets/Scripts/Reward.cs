@@ -28,6 +28,8 @@ public class Reward : MonoBehaviour
 
     protected CanvasGroup m_canvasGroup;
 
+    protected bool m_isPlayingDeadAnim;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,7 +41,7 @@ public class Reward : MonoBehaviour
     void Update()
     {
         m_duration += Time.deltaTime;
-        if (m_survivalTime > 0) {
+        if (m_survivalTime > 0 && !m_isPlayingDeadAnim) {
             float diff = m_survivalTime - m_duration;
             if (diff > 0 && m_remainingTimeToTwinkle > 0) {
                 // 按照一定频率进行闪烁显示
@@ -72,6 +74,7 @@ public class Reward : MonoBehaviour
     public void OnDead() {
         m_duration = 0;
         m_canvasGroup.alpha = 1;
+        m_isPlayingDeadAnim = false;
         if (m_spawn != null) {
             m_spawn.RecoverReward(this);
         } else {
@@ -135,6 +138,7 @@ public class Reward : MonoBehaviour
     
     public virtual void PlayDeadAnim(Transform targetTrans, TweenCallback callback) {
         if (targetTrans != null) {
+            m_isPlayingDeadAnim = true; // 标记正在播放死亡动画
             this.PlayDeadAnim(targetTrans.position, callback);
         }
     }

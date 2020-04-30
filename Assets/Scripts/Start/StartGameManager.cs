@@ -27,7 +27,7 @@ public class StartGameManager : MonoBehaviour
     Transform m_patternDetail; // 模式详情
     Transform m_patternDetailDetail; // 模式详情的细节
 
-    Transform m_escapeTips; // 退出游戏提示
+    Image m_escapeTips; // 退出游戏提示
 
     PatternType m_patternType; // 当前所选择的模式类型
 
@@ -37,7 +37,7 @@ public class StartGameManager : MonoBehaviour
     void Awake() {
         Instance = this;
         m_enterBtn = this.transform.Find("Enter");
-        m_escapeTips = this.transform.Find("EscapeTips");
+        m_escapeTips = this.transform.Find("EscapeTips").GetComponent<Image>();
         m_patternName = this.transform.Find("Pattern").Find("PatternName");
         m_patternDetail = this.transform.Find("PatternDetail");
         m_patternDetailDetail = m_patternDetail.Find("Detail");
@@ -72,11 +72,11 @@ public class StartGameManager : MonoBehaviour
             } else {
                 m_escapeActualDuration = m_escapeDuration;
                 m_escapeTips.gameObject.SetActive(true);
-                Image escapeTips = m_escapeTips.GetComponent<Image>();
-                escapeTips.DOFade(1, 0).OnComplete(() => {
-                    escapeTips.DOFade(0.8f, m_escapeDuration).OnComplete(() => {
-                        escapeTips.DOFade(1, 0);
-                        m_escapeTips.gameObject.SetActive(false);
+                m_escapeTips.DOFade(1, 0).OnComplete(() => {
+                    m_escapeTips.DOFade(0.6f, m_escapeDuration).OnComplete(() => {
+                        m_escapeTips.DOFade(0, 0.1f).OnComplete(() => {
+                            m_escapeTips.gameObject.SetActive(false);
+                        });
                     });
                 });
             }

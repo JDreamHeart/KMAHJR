@@ -65,13 +65,14 @@ public class StartGameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (m_escapeActualDuration > 0) {
+                this.GetComponent<AudioSource>().Stop(); // 停止背景音乐
                 Application.Quit(); // 退出游戏
             } else {
                 m_escapeActualDuration = m_escapeDuration;
                 m_escapeTips.gameObject.SetActive(true);
                 Image escapeTips = m_escapeTips.GetComponent<Image>();
                 escapeTips.DOFade(1, 0).OnComplete(() => {
-                    escapeTips.DOFade(0.2f, m_escapeDuration).OnComplete(() => {
+                    escapeTips.DOFade(0.8f, m_escapeDuration).OnComplete(() => {
                         escapeTips.DOFade(1, 0);
                         m_escapeTips.gameObject.SetActive(false);
                     });

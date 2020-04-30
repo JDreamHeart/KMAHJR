@@ -24,7 +24,7 @@ public class GameData : MonoBehaviour
 {
     public static GameData Instance;
 
-    public readonly string version = "0.11";
+    public readonly string version = "0.12";
 
     Dictionary<PatternType, List<ScoreDataItem>> m_scoreMap = new Dictionary<PatternType, List<ScoreDataItem>>();
     

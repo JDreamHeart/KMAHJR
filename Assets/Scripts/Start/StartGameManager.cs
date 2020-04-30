@@ -65,7 +65,9 @@ public class StartGameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape)) {
             if (m_escapeActualDuration > 0) {
-                this.GetComponent<AudioSource>().Stop(); // 停止背景音乐
+                AudioSource audioSource = this.GetComponent<AudioSource>();
+                audioSource.volume = 0; // 降低背景音乐
+                audioSource.Stop(); // 停止背景音乐
                 Application.Quit(); // 退出游戏
             } else {
                 m_escapeActualDuration = m_escapeDuration;

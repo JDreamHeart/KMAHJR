@@ -9,6 +9,7 @@ public enum PatternType {
     Normal = 0,
     DoubleJump = 1, // 二段跳模式
     Guardian = 2, // 守护模式
+    DoubleChromosphere = 3, // 双色球
 }
 
 [AddComponentMenu("GameScripts/StartGameManager")]
@@ -46,6 +47,8 @@ public class StartGameManager : MonoBehaviour
         m_patternDetailMap.Add(PatternType.DoubleJump, m_patternDetailDetail.Find("DoubleJump").gameObject); // 模式详情
         m_patternSceneMap.Add(PatternType.DoubleJump, "DoubleJumpScene"); // 对应模式的场景
         m_patternDetailMap.Add(PatternType.Guardian, m_patternDetailDetail.Find("Guardian").gameObject);
+        m_patternDetailMap.Add(PatternType.DoubleChromosphere, m_patternDetailDetail.Find("DoubleChromosphere").gameObject); // 双色球详情
+        m_patternSceneMap.Add(PatternType.DoubleChromosphere, "DoubleChromosphereScene"); // 双色球
     }
 
     // Start is called before the first frame update
